@@ -14,5 +14,5 @@ The following questions are the main subjects which this project focuses on:
 
 These insights could help inform public health strategies, allowing for proactive interventions during periods of poor air quality. Furthermore, the findings may assist urban planners in developing strategies to mitigate air quality risks, contributing to healthier living environments in urban areas.
 
-Data Source: The dataset in this project, titled Urban Air Quality and Health Impact Dataset, contains over 1,000 observations with 46 variables. It can be accessed at [Urban Air Quality and Health Impact Dataset](https://www.kaggle.com/datasets/abdullah0a/urban-air-quality-and-health-impact-dataset)
+Data Source: The dataset in this project, titled Urban Air Quality and Health Impact Dataset, contains over 4,000 observations with 46 variables. It can be accessed at [Urban Air Quality and Health Impact Dataset](https://www.kaggle.com/datasets/abdullah0a/urban-air-quality-and-health-impact-dataset)
 
