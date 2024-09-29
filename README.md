@@ -8,6 +8,8 @@ The following questions are the main subjects which this project focuses on:
    1)	Analyze how air quality indicators vary across different seasons and cities.
    2)	Investigate the key meteorological factors that significantly influence health risk scores.
    3)	Determine the ability to predict periods of heightened health risk based on air quality and weather conditions.
+   4)	Analyze air quality indicators and health risk scores trends ditter between weekdays and weekends.
+   5)	Investigate air quality and health impacts vary across different demographic groups.
 
 These insights could help inform public health strategies, allowing for proactive interventions during periods of poor air quality. Furthermore, the findings may assist urban planners in developing strategies to mitigate air quality risks, contributing to healthier living environments in urban areas.
 
