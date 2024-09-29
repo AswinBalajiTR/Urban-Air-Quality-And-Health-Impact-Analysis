@@ -1,6 +1,7 @@
-# DATS6101_TEAM2_PROJECT
+# Urban Air Quality Health Impact Analysis
 
-FALL 2024 GWU DATS6101 URBAN AIR QUALITY AND HEALTH IMPACT DATASET AND SMART QUESTIONS
+
+### FALL 2024 GWU **__DATS6101__** URBAN AIR QUALITY AND HEALTH IMPACT DATASET AND SMART QUESTIONS
 
 Our research focuses on analyzing the relationship between urban air quality and public health through an exploratory data analysis (EDA). The dataset captures key environmental factors such as temperature, humidity, wind speed, and visibility, alongside health-related metrics including severity scores and health risk scores. By exploring this data, we aim to identify patterns and correlations between air quality and health outcomes.
 
