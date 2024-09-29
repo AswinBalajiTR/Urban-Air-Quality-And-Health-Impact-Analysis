@@ -1,4 +1,4 @@
-# Urban Air Quality Health Impact Analysis
+# Urban Air Quality And Health Impact Analysis
 
 
 ### FALL 2024 GWU **__DATS6101__** URBAN AIR QUALITY AND HEALTH IMPACT DATASET AND SMART QUESTIONS
