@@ -63,6 +63,8 @@ summary(Data)
 
 
 ```{r}
+Data$Day_of_Week <- factor(Data$Day_of_Week, levels = c("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"))
+
 ```
 
 Data Cleaning:
@@ -70,6 +72,7 @@ Data Cleaning:
 Missing values in the dataset
 
 ```{r}
+sum(is.na(Data))
 missing_summary <- sapply(Data, function(x) sum(is.na(x)))
 print(missing_summary)
 Data_WMV <- na.omit(Data)
@@ -84,14 +87,35 @@ corr_matrix <- cor(Data[, sapply(Data, is.numeric)], use = "complete.obs")
 corrplot(corr_matrix, method = "circle")
 ```
 
-missing values in the dataset
 
 ```{r}
-missing_summary <- sapply(Data, function(x) sum(is.na(x)))
-print(missing_summary)
+library(ggplot2)# Plot histogram for temperature
+ggplot(Data, aes(x = temp)) + 
+    geom_histogram(binwidth = 1, fill = "blue", color = "black", alpha = 0.7) + 
+    labs(title = "Temperature Distribution", x = "Temperature")
+
 ```
 
-Remove Rows with Missing Data
+
 
 ```{r}
+# Boxplot of Temperature by Season
+ggplot(Data, aes(x = Season, y = temp)) + 
+    geom_boxplot() + 
+    labs(title = "Temperature by Season", x = "Season", y = "Temperature")
+
+# Boxplot of Temperature on Week_days
+ggplot(Data, aes(x = Day_of_Week, y = temp)) + 
+    geom_boxplot() + 
+    labs(title = "Temperature on Week_days", x = "Day_of_Week", y = "Temperature")
+
+# Boxplot of Temperature on Health_Risk_Score
+ggplot(Data, aes(x = Health_Risk_Score, y = temp)) + 
+    geom_boxplot() + 
+    labs(title = "Temperature on Health_Risk_Score", x = "Health_Risk_Score", y = "Temperature")
+
+# Boxplot of Health_Risk_Score on Week_days
+ggplot(Data, aes(x = Day_of_Week, y = Health_Risk_Score)) + 
+    geom_boxplot() + 
+    labs(title = "Health_Risk_Score on Week_days", x = "Day_of_Week", y = "Health_Risk_Score")
 ```
