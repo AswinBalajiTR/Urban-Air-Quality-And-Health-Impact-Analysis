@@ -29,8 +29,9 @@ summary(df)
 #Checking for appropriate datatype
 sapply(df,class)
 ```
+
 ```{r}
-missing_values <- colSums(is.na(data))
+missing_values <- colSums(is.na(df))
 print(missing_values)
 ```
 
