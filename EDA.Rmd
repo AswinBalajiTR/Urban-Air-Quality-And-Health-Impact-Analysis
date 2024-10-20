@@ -236,4 +236,55 @@ head(df)
 paste("Row Count:",dim(df)[1],"Column Count:",dim(df)[2])
 ```
 
+## **Univariate Analysis**
+```{r}
+# Distribution of Health Risk Score
+ggplot(df, aes(x = Health_Risk_Score)) +
+  geom_histogram(bins = 50, fill = "#2993ae", alpha = 0.5) +
+  labs(title = "Distribution of Health Risk Score", x = "Health Risk Score", y = "Frequency")
+```
+
+```{r}
+paste("The majority of the population has health risk scores around 9.0, with a small subset showing elevated scores near 10.0.")
+```
+
+## **Bivariate and Multivariate Analysis**
+
+```{r}
+paste("Is there a statistically significant difference in the Health Risk Score on weekends compared to weekdays?")
+  
+# Separate Health Risk Scores by weekends and weekdays
+weekend_scores <- df$Health_Risk_Score[df$Is_Weekend == "True"]
+weekday_scores <- df$Health_Risk_Score[df$Is_Weekend == "False"]
+
+# Display hypothesis statements
+cat("Hypothesis Statements:\n")
+cat("Null Hypothesis (H0): There is no significant difference in the Health Risk Score between weekends and weekdays.\n")
+cat("Alternative Hypothesis (H1): There is a significant difference in the Health Risk Score between weekends and weekdays.\n\n")
+
+t_test_result <- t.test(weekend_scores, weekday_scores, alternative = "two.sided")
+
+# Display the t-test results
+print(t_test_result)
+
+# Interpretation
+cat("\nInterpretation:\n")
+if(t_test_result$p.value < 0.05) {
+  cat("Reject the null hypothesis: There is a statistically significant difference in the Health Risk Score between weekends and weekdays.\n")
+} else {
+  cat("Fail to reject the null hypothesis: There is no statistically significant difference in the Health Risk Score between weekends and weekdays.\n")
+}
+```
+```{r}
+boxplot(Health_Risk_Score ~ Is_Weekend, data = df,
+        main = "Health Risk Score Comparison: Weekends vs. Weekdays",
+        xlab = "Is Weekend",
+        ylab = "Health Risk Score",
+        col = c("lightblue", "lightgreen"),
+        border = "#202020")
+```
+
+```{r}
+paste("The weak negative correlation of -0.24 suggests that higher temperatures are slightly associated with lower health risk scores, though the relationship is not strong")
+```
 
