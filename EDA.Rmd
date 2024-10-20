@@ -1,38 +1,134 @@
 ---
-title: "EDA"
-output: html_document
-date: "2024-10-09"
+title: "**Urban Air Quality And Health Impact Analysis - EDA Project - Team 2**"
+author: "Abilasha Singh, Aswin Balaji Thippa Ramesh, Lixing Pan"
+date: "`r Sys.Date()`"
+output:
+  html_document:
+    code_folding: hide
+    number_sections: false
+    toc: yes
+    toc_depth: 3
+    toc_float: yes
+  pdf_document:
+    toc: yes
+    toc_depth: '3'
 ---
 
+
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+# Some of common RMD options (and the defaults) are: 
+# include=T, eval=T, echo=T, results='hide'/'asis'/'markup',..., collapse=F, warning=T, message=T, error=T, cache=T, fig.width=6, fig.height=4, fig.dim=c(6,4) #inches, fig.align='left'/'center','right', 
+knitr::opts_chunk$set(warning = F, message = F)
+# Can globally set option for number display format.
+options(scientific=T, digits = 3) 
+# options(scipen=9, digits = 3) 
 ```
 
-## R Markdown
+## **Dataset** : Urban Air Quality and Health Impact Dataset
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+### **Variable** | **Definition** 
 
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+**DateTime** | Timestamp of the recorded data.
+
+**City** | The U.S. city where the data was recorded (e.g., Phoenix, San Diego, New York City).
+
+**Temp_Max** | Maximum temperature for the day (°F).
+
+**Temp_Min** | Minimum temperature for the day (°F).
+
+**Temp_Avg** | Average temperature for the day (°F).
+
+**Feels_Like_Max** | Maximum "feels like" temperature for the day (°F).
+
+**Feels_Like_Min** | Minimum "feels like" temperature for the day (°F).
+
+**Feels_Like_Avg** | Average "feels like" temperature for the day (°F).
+
+**Dew_Point** | Dew point temperature (°F).
+
+**Humidity** | Relative humidity percentage.
+
+**Precipitation** | Total precipitation for the day (inches).
+
+**Precip_Prob** | Probability of precipitation (percentage).
+
+**Precip_Cover** | Coverage of precipitation (percentage).
+
+**Precip_Type** | Type of precipitation (e.g., rain, snow).
+
+**Snow** | Amount of snowfall (inches).
+
+**Snow_Depth** | Snow depth (inches).
+
+**Wind_Gust** | Maximum wind gust speed (mph).
+
+**Wind_Speed** | Average wind speed (mph).
+
+**Wind_Direction** | Wind direction (degrees).
+
+**Pressure** | Atmospheric pressure (hPa).
+
+**Cloud_Cover** | Cloud cover percentage.
+
+**Visibility** | Visibility distance (miles).
+
+**Solar_Radiation** | Solar radiation (W/m²).
+
+**Solar_Energy** | Solar energy received (kWh).
+
+**UV_Index** | UV index level.
+
+**Severe_Risk** | Risk level of severe weather (e.g., low, moderate, high).
+
+**Sunrise** | Sunrise time (HH:MM:SS).
+
+**Sunset** | Sunset time (HH:MM:SS).
+
+**Moon_Phase** | Phase of the moon (e.g., new moon, full moon).
+
+**Conditions** | General weather conditions (e.g., clear, cloudy).
+
+**Description** | Detailed description of the weather conditions.
+
+**Icon** | Weather icon representation.
+
+**Stations** | Weather stations reporting data.
+
+**Source** | Data source information.
+
+**Temp_Range** | Temperature range for the day (difference between max and min temperatures).
+
+**Heat_Index** | Heat index value for the day.
+
+**Severity_Score** | Score representing the severity of weather conditions.
+
+**Condition_Code** | Code representing specific weather conditions.
+
+**Month** | Month of the year.
+
+**Season** | Season of the year (e.g., winter, spring).
+
+**Day_of_Wee**k | Day of the week.
+
+**Is_Weekend** | Indicator if the day is a weekend.
+
+**Health_Risk_Score** | Score representing the potential health risk based on weather and air quality conditions.
 
 ```{r}
-#Loading the dataset
-df=read.csv("air_quality_health_impact_data.csv")
-head(df)
+library(dplyr)
+library(ezids)
+library(ggplot2)
+library(tidyr)
+library(reshape2)
+library(gridExtra)
 ```
 
+## **Data Loading**
 ```{r}
-#displaying summary
-summary(df)
 ```
 
+## **Data Description and Summmary**
 ```{r}
-#Checking for appropriate datatype
-sapply(df,class)
 ```
-```{r}
-missing_values <- colSums(is.na(data))
-print(missing_values)
-```
-
 
 
