@@ -135,18 +135,66 @@ head(df)
 #Shape of the dataset
 paste("Row Count:",dim(df)[1],"Column Count:",dim(df)[2])
 ```
+
 ```{r}
-#comman stucture of the dataset
+#Structure of the dataset
 str(df)
+```
+
+## **Appropriate Datatype Conversion**
+```{r}
+#Converting required columns as a factor variable
+df$conditions <- as.factor(df$conditions)
+df$description <- as.factor(df$description)
+df$icon <- as.factor(df$icon)
+df$source <- as.factor(df$source)
+df$City <- as.factor(df$City)
+df$Month <- as.factor(df$Month)
+df$Season <- as.factor(df$Season)
+df$Day_of_Week <- as.factor(df$Day_of_Week)
+df$Is_Weekend <- as.factor(df$Is_Weekend)
+```
+
+```{r}
+#Checking for datatype of every column
+sapply(df, class)
 ```
 
 ```{r}
 #summary of the dataset
 summary(df)
 ```
-
+## **Dropping of unwanted columns**
 ```{r}
 #Checking for unique values in all the columns
 unique_counts <- sapply(df, function(x) length(unique(x)))
 unique_counts
 ```
+
+```{r}
+#Dropping the unwanted columns
+df<- subset(df, select = -c(Season,Month,snow,snowdepth)) 
+head(df)
+dim(df)
+```
+
+## **Duplicates and missing values removal**
+```{r}
+#Checking for duplicate rows
+duplicates <- df %>% duplicated() %>% sum()
+print(paste("Number of duplicate rows:", duplicates))
+```
+
+```{r}
+#Checking for missing values
+missing_values <- colSums(is.na(df))
+print(missing_values)
+```
+## **Outliers Removal**
+```{r}
+```
+
+```{r}
+```
+
+

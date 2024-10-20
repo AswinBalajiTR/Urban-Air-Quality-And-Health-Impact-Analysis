@@ -1651,9 +1651,334 @@ library(gridExtra)</code></pre>
 </div>
 <div id="data-loading" class="section level2">
 <h2><strong>Data Loading</strong></h2>
+<pre class="r"><code>#loading the data
+df=read.csv(&quot;air_quality_health_impact_data.csv&quot;)
+head(df)</code></pre>
+<pre><code>##     datetime datetimeEpoch tempmax tempmin temp feelslikemax feelslikemin
+## 1 07-09-2024      1.73e+09    89.0    62.1 73.3         88.6         62.1
+## 2 08-09-2024      1.73e+09    89.0    60.0 72.4         87.9         60.0
+## 3 10-09-2024      1.73e+09    79.4    59.6 67.8         79.4         59.6
+## 4 11-09-2024      1.73e+09    77.3    57.6 66.3         77.3         57.6
+## 5 12-09-2024      1.73e+09    79.2    57.8 67.4         79.2         57.8
+## 6 13-09-2024      1.73e+09    83.2    58.9 69.6         82.2         58.9
+##   feelslike  dew humidity precip precipprob precipcover snow snowdepth windgust
+## 1      73.3 59.8     66.3      0          0           0    0         0     16.1
+## 2      72.3 57.6     62.5      0          0           0    0         0     13.9
+## 3      67.8 57.2     70.7      0          0           0    0         0     17.4
+## 4      66.3 56.8     73.1      0          4           0    0         0     23.0
+## 5      67.4 55.6     68.3      0          5           0    0         0     17.9
+## 6      69.5 54.2     60.5      0          0           0    0         0     16.1
+##   windspeed winddir pressure cloudcover visibility solarradiation solarenergy
+## 1       9.2     311     1012       12.0       10.0            268        23.4
+## 2       8.1     310     1012       15.6        9.8            279        24.1
+## 3       9.8     290     1012       18.8       12.4            275        23.8
+## 4      13.4     274     1010       17.3       15.0            264        22.6
+## 5      10.7     286     1007       14.2       15.0            262        22.6
+## 6       8.9     288     1007        5.9       15.0            263        22.5
+##   uvindex severerisk  sunrise sunriseEpoch   sunset sunsetEpoch moonphase
+## 1       9         10 06:43:31     1.73e+09 19:26:34    1.73e+09      0.16
+## 2       9         10 06:44:20     1.73e+09 19:25:03    1.73e+09      0.19
+## 3       9         10 06:45:59     1.73e+09 19:22:01    1.73e+09      0.25
+## 4       8         10 06:46:48     1.73e+09 19:20:29    1.73e+09      0.29
+## 5       8         10 06:47:38     1.73e+09 19:18:57    1.73e+09      0.32
+## 6       8         10 06:48:27     1.73e+09 19:17:25    1.73e+09      0.36
+##   conditions                          description      icon source     City
+## 1      Clear Clear conditions throughout the day. clear-day   comb San Jose
+## 2      Clear Clear conditions throughout the day. clear-day   fcst San Jose
+## 3      Clear Clear conditions throughout the day. clear-day   fcst San Jose
+## 4      Clear Clear conditions throughout the day. clear-day   fcst San Jose
+## 5      Clear Clear conditions throughout the day. clear-day   fcst San Jose
+## 6      Clear Clear conditions throughout the day. clear-day   fcst San Jose
+##   Temp_Range Heat_Index Severity_Score Month Season Day_of_Week Is_Weekend
+## 1       26.9       75.8           3.41     9   Fall    Saturday       True
+## 2       29.0       75.9           3.19     9   Fall      Sunday       True
+## 3       19.8       73.5           3.54     9   Fall     Tuesday      False
+## 4       19.7       72.9           3.90     9   Fall   Wednesday      False
+## 5       21.4       74.3           3.39     9   Fall    Thursday      False
+## 6       24.3       75.8           3.21     9   Fall      Friday      False
+##   Health_Risk_Score
+## 1              9.85
+## 2              9.59
+## 3              9.85
+## 4             10.14
+## 5              9.75
+## 6              9.52</code></pre>
 </div>
 <div id="data-description-and-summmary" class="section level2">
 <h2><strong>Data Description and Summmary</strong></h2>
+<pre class="r"><code>#Shape of the dataset
+paste(&quot;Row Count:&quot;,dim(df)[1],&quot;Column Count:&quot;,dim(df)[2])</code></pre>
+<pre><code>## [1] &quot;Row Count: 27674 Column Count: 43&quot;</code></pre>
+<pre class="r"><code>#Structure of the dataset
+str(df)</code></pre>
+<pre><code>## &#39;data.frame&#39;:    27674 obs. of  43 variables:
+##  $ datetime         : chr  &quot;07-09-2024&quot; &quot;08-09-2024&quot; &quot;10-09-2024&quot; &quot;11-09-2024&quot; ...
+##  $ datetimeEpoch    : num  1.73e+09 1.73e+09 1.73e+09 1.73e+09 1.73e+09 ...
+##  $ tempmax          : num  89 89 79.4 77.3 79.2 83.2 81.4 78.3 81.2 82.3 ...
+##  $ tempmin          : num  62.1 60 59.6 57.6 57.8 58.9 59.4 59.8 59.3 60.9 ...
+##  $ temp             : num  73.3 72.4 67.8 66.3 67.4 69.6 68.8 66.8 68.9 68.5 ...
+##  $ feelslikemax     : num  88.6 87.9 79.4 77.3 79.2 82.2 81.3 78.3 79.6 80.2 ...
+##  $ feelslikemin     : num  62.1 60 59.6 57.6 57.8 58.9 59.4 59.8 59.3 60.9 ...
+##  $ feelslike        : num  73.3 72.3 67.8 66.3 67.4 69.5 68.8 66.8 68.6 68.4 ...
+##  $ dew              : num  59.8 57.6 57.2 56.8 55.6 54.2 55.5 47.3 44.4 46.6 ...
+##  $ humidity         : num  66.3 62.5 70.7 73.1 68.3 60.5 64.2 52.9 43.5 47.6 ...
+##  $ precip           : num  0 0 0 0 0 0 0 0 0 0 ...
+##  $ precipprob       : num  0 0 0 4 5 0 1 3.2 0 0 ...
+##  $ precipcover      : num  0 0 0 0 0 0 0 0 0 0 ...
+##  $ snow             : int  0 0 0 0 0 0 0 0 0 0 ...
+##  $ snowdepth        : num  0 0 0 0 0 0 0 0 0 0 ...
+##  $ windgust         : num  16.1 13.9 17.4 23 17.9 16.1 16.6 9.8 7.8 8.5 ...
+##  $ windspeed        : num  9.2 8.1 9.8 13.4 10.7 8.9 9.8 8.9 8.1 10.3 ...
+##  $ winddir          : num  311 310 290 274 286 ...
+##  $ pressure         : num  1012 1012 1012 1010 1007 ...
+##  $ cloudcover       : num  12 15.6 18.8 17.3 14.2 5.9 8.9 3.1 8.6 14.2 ...
+##  $ visibility       : num  10 9.8 12.4 15 15 15 14.9 14.9 15 14.9 ...
+##  $ solarradiation   : num  268 279 275 264 262 ...
+##  $ solarenergy      : num  23.4 24.1 23.8 22.6 22.6 22.5 22.3 22 21.7 21.3 ...
+##  $ uvindex          : num  9 9 9 8 8 8 8 8 8 8 ...
+##  $ severerisk       : num  10 10 10 10 10 10 10 10 10 10 ...
+##  $ sunrise          : chr  &quot;06:43:31&quot; &quot;06:44:20&quot; &quot;06:45:59&quot; &quot;06:46:48&quot; ...
+##  $ sunriseEpoch     : num  1.73e+09 1.73e+09 1.73e+09 1.73e+09 1.73e+09 ...
+##  $ sunset           : chr  &quot;19:26:34&quot; &quot;19:25:03&quot; &quot;19:22:01&quot; &quot;19:20:29&quot; ...
+##  $ sunsetEpoch      : num  1.73e+09 1.73e+09 1.73e+09 1.73e+09 1.73e+09 ...
+##  $ moonphase        : num  0.16 0.19 0.25 0.29 0.32 0.36 0.39 0.42 0.46 0.5 ...
+##  $ conditions       : chr  &quot;Clear&quot; &quot;Clear&quot; &quot;Clear&quot; &quot;Clear&quot; ...
+##  $ description      : chr  &quot;Clear conditions throughout the day.&quot; &quot;Clear conditions throughout the day.&quot; &quot;Clear conditions throughout the day.&quot; &quot;Clear conditions throughout the day.&quot; ...
+##  $ icon             : chr  &quot;clear-day&quot; &quot;clear-day&quot; &quot;clear-day&quot; &quot;clear-day&quot; ...
+##  $ source           : chr  &quot;comb&quot; &quot;fcst&quot; &quot;fcst&quot; &quot;fcst&quot; ...
+##  $ City             : chr  &quot;San Jose&quot; &quot;San Jose&quot; &quot;San Jose&quot; &quot;San Jose&quot; ...
+##  $ Temp_Range       : num  26.9 29 19.8 19.7 21.4 24.3 22 18.5 21.9 21.4 ...
+##  $ Heat_Index       : num  75.8 75.9 73.5 72.9 74.3 ...
+##  $ Severity_Score   : num  3.41 3.19 3.54 3.9 3.39 3.21 3.26 2.58 2.38 2.45 ...
+##  $ Month            : int  9 9 9 9 9 9 9 9 9 9 ...
+##  $ Season           : chr  &quot;Fall&quot; &quot;Fall&quot; &quot;Fall&quot; &quot;Fall&quot; ...
+##  $ Day_of_Week      : chr  &quot;Saturday&quot; &quot;Sunday&quot; &quot;Tuesday&quot; &quot;Wednesday&quot; ...
+##  $ Is_Weekend       : chr  &quot;True&quot; &quot;True&quot; &quot;False&quot; &quot;False&quot; ...
+##  $ Health_Risk_Score: num  9.85 9.59 9.85 10.14 9.75 ...</code></pre>
+</div>
+<div id="appropriate-datatype-conversion" class="section level2">
+<h2><strong>Appropriate Datatype Conversion</strong></h2>
+<pre class="r"><code>#Converting required columns as a factor variable
+df$conditions &lt;- as.factor(df$conditions)
+df$description &lt;- as.factor(df$description)
+df$icon &lt;- as.factor(df$icon)
+df$source &lt;- as.factor(df$source)
+df$City &lt;- as.factor(df$City)
+df$Month &lt;- as.factor(df$Month)
+df$Season &lt;- as.factor(df$Season)
+df$Day_of_Week &lt;- as.factor(df$Day_of_Week)
+df$Is_Weekend &lt;- as.factor(df$Is_Weekend)</code></pre>
+<pre class="r"><code>#Checking for datatype of every column
+sapply(df, class)</code></pre>
+<pre><code>##          datetime     datetimeEpoch           tempmax           tempmin 
+##       &quot;character&quot;         &quot;numeric&quot;         &quot;numeric&quot;         &quot;numeric&quot; 
+##              temp      feelslikemax      feelslikemin         feelslike 
+##         &quot;numeric&quot;         &quot;numeric&quot;         &quot;numeric&quot;         &quot;numeric&quot; 
+##               dew          humidity            precip        precipprob 
+##         &quot;numeric&quot;         &quot;numeric&quot;         &quot;numeric&quot;         &quot;numeric&quot; 
+##       precipcover              snow         snowdepth          windgust 
+##         &quot;numeric&quot;         &quot;integer&quot;         &quot;numeric&quot;         &quot;numeric&quot; 
+##         windspeed           winddir          pressure        cloudcover 
+##         &quot;numeric&quot;         &quot;numeric&quot;         &quot;numeric&quot;         &quot;numeric&quot; 
+##        visibility    solarradiation       solarenergy           uvindex 
+##         &quot;numeric&quot;         &quot;numeric&quot;         &quot;numeric&quot;         &quot;numeric&quot; 
+##        severerisk           sunrise      sunriseEpoch            sunset 
+##         &quot;numeric&quot;       &quot;character&quot;         &quot;numeric&quot;       &quot;character&quot; 
+##       sunsetEpoch         moonphase        conditions       description 
+##         &quot;numeric&quot;         &quot;numeric&quot;          &quot;factor&quot;          &quot;factor&quot; 
+##              icon            source              City        Temp_Range 
+##          &quot;factor&quot;          &quot;factor&quot;          &quot;factor&quot;         &quot;numeric&quot; 
+##        Heat_Index    Severity_Score             Month            Season 
+##         &quot;numeric&quot;         &quot;numeric&quot;          &quot;factor&quot;          &quot;factor&quot; 
+##       Day_of_Week        Is_Weekend Health_Risk_Score 
+##          &quot;factor&quot;          &quot;factor&quot;         &quot;numeric&quot;</code></pre>
+<pre class="r"><code>#summary of the dataset
+summary(df)</code></pre>
+<pre><code>##    datetime         datetimeEpoch         tempmax        tempmin    
+##  Length:27674       Min.   :1.73e+09   Min.   :70.2   Min.   :50.5  
+##  Class :character   1st Qu.:1.73e+09   1st Qu.:77.3   1st Qu.:58.4  
+##  Mode  :character   Median :1.73e+09   Median :81.4   Median :61.2  
+##                     Mean   :1.73e+09   Mean   :80.6   Mean   :61.4  
+##                     3rd Qu.:1.73e+09   3rd Qu.:83.2   3rd Qu.:64.6  
+##                     Max.   :1.73e+09   Max.   :90.5   Max.   :74.9  
+##                                                                     
+##       temp       feelslikemax   feelslikemin    feelslike         dew      
+##  Min.   :60.1   Min.   :68.8   Min.   :50.2   Min.   :59.3   Min.   :41.1  
+##  1st Qu.:66.5   1st Qu.:77.3   1st Qu.:58.0   1st Qu.:66.6   1st Qu.:47.5  
+##  Median :70.5   Median :81.0   Median :61.0   Median :70.4   Median :53.8  
+##  Mean   :69.9   Mean   :80.2   Mean   :61.4   Mean   :70.0   Mean   :53.1  
+##  3rd Qu.:73.4   3rd Qu.:83.1   3rd Qu.:64.7   3rd Qu.:73.3   3rd Qu.:58.5  
+##  Max.   :79.7   Max.   :90.3   Max.   :76.5   Max.   :80.1   Max.   :65.9  
+##                                                                            
+##     humidity        precip           precipprob     precipcover          snow  
+##  Min.   :38.5   Min.   :-0.02088   Min.   :-5.90   Min.   :-1.481   Min.   :0  
+##  1st Qu.:51.9   1st Qu.:-0.00288   1st Qu.:-0.29   1st Qu.:-0.282   1st Qu.:0  
+##  Median :57.5   Median : 0.00000   Median : 1.00   Median : 0.000   Median :0  
+##  Mean   :57.3   Mean   : 0.00091   Mean   : 2.35   Mean   : 0.050   Mean   :0  
+##  3rd Qu.:63.0   3rd Qu.: 0.00505   3rd Qu.: 3.28   3rd Qu.: 0.392   3rd Qu.:0  
+##  Max.   :76.6   Max.   : 0.02460   Max.   :20.81   Max.   : 2.228   Max.   :0  
+##                                                                                
+##    snowdepth    windgust       windspeed        winddir       pressure   
+##  Min.   :0   Min.   : 3.50   Min.   : 4.89   Min.   : 21   Min.   :1006  
+##  1st Qu.:0   1st Qu.: 9.21   1st Qu.: 8.25   1st Qu.:164   1st Qu.:1012  
+##  Median :0   Median :13.69   Median : 9.20   Median :201   Median :1016  
+##  Mean   :0   Mean   :13.11   Mean   : 9.33   Mean   :208   Mean   :1016  
+##  3rd Qu.:0   3rd Qu.:16.28   3rd Qu.:10.43   3rd Qu.:279   3rd Qu.:1021  
+##  Max.   :0   Max.   :23.42   Max.   :15.00   Max.   :330   Max.   :1031  
+##                                                                          
+##    cloudcover      visibility    solarradiation  solarenergy      uvindex     
+##  Min.   :-4.40   Min.   : 9.53   Min.   :214    Min.   :18.8   Min.   : 5.72  
+##  1st Qu.: 3.43   1st Qu.:11.93   1st Qu.:250    1st Qu.:21.6   1st Qu.: 6.89  
+##  Median :10.26   Median :14.90   Median :258    Median :22.2   Median : 7.98  
+##  Mean   :11.03   Mean   :13.63   Mean   :260    Mean   :22.5   Mean   : 7.68  
+##  3rd Qu.:16.63   3rd Qu.:15.05   3rd Qu.:268    3rd Qu.:23.3   3rd Qu.: 8.37  
+##  Max.   :29.63   Max.   :15.71   Max.   :313    Max.   :26.8   Max.   :10.00  
+##                                                                               
+##    severerisk      sunrise           sunriseEpoch         sunset         
+##  Min.   : 8.21   Length:27674       Min.   :1.73e+09   Length:27674      
+##  1st Qu.: 9.58   Class :character   1st Qu.:1.73e+09   Class :character  
+##  Median :10.00   Mode  :character   Median :1.73e+09   Mode  :character  
+##  Mean   :10.06                      Mean   :1.73e+09                     
+##  3rd Qu.:10.63                      3rd Qu.:1.73e+09                     
+##  Max.   :12.06                      Max.   :1.73e+09                     
+##                                                                          
+##   sunsetEpoch         moonphase                conditions   
+##  Min.   :1.73e+09   Min.   :0.141   Clear           :22826  
+##  1st Qu.:1.73e+09   1st Qu.:0.231   Partially cloudy: 4848  
+##  Median :1.73e+09   Median :0.325                           
+##  Mean   :1.73e+09   Mean   :0.346                           
+##  3rd Qu.:1.73e+09   3rd Qu.:0.450                           
+##  Max.   :1.73e+09   Max.   :0.647                           
+##                                                             
+##                                description                   icon      
+##  Becoming cloudy in the afternoon.   :  404   clear-day        :22826  
+##  Clear conditions throughout the day.:22422   partly-cloudy-day: 4848  
+##  Clearing in the afternoon.          :  404                            
+##  Partly cloudy throughout the day.   : 4444                            
+##                                                                        
+##                                                                        
+##                                                                        
+##   source                 City        Temp_Range     Heat_Index   Severity_Score
+##  comb:  505   San Jose     :7777   Min.   : 8.1   Min.   :72.5   Min.   :1.85  
+##  fcst:27169   New York City:6060   1st Qu.:16.9   1st Qu.:76.1   1st Qu.:2.44  
+##               Philadelphia :3939   Median :19.8   Median :77.0   Median :2.72  
+##               Chicago      :3838   Mean   :19.3   Mean   :77.1   Mean   :2.85  
+##               Los Angeles  :3838   3rd Qu.:21.7   3rd Qu.:78.0   3rd Qu.:3.23  
+##               Dallas       : 909   Max.   :29.8   Max.   :81.6   Max.   :4.32  
+##               (Other)      :1313                                               
+##  Month      Season         Day_of_Week   Is_Weekend    Health_Risk_Score
+##  9:27674   Fall:27674   Friday   :3737   False:18483   Min.   : 8.41    
+##                         Monday   :4343   True : 9191   1st Qu.: 9.06    
+##                         Saturday :3333                 Median : 9.28    
+##                         Sunday   :5858                 Mean   : 9.34    
+##                         Thursday :3535                 3rd Qu.: 9.59    
+##                         Tuesday  :2727                 Max.   :10.70    
+##                         Wednesday:4141</code></pre>
+</div>
+<div id="dropping-of-unwanted-columns" class="section level2">
+<h2><strong>Dropping of unwanted columns</strong></h2>
+<pre class="r"><code>#Checking for unique values in all the columns
+unique_counts &lt;- sapply(df, function(x) length(unique(x)))
+unique_counts</code></pre>
+<pre><code>##          datetime     datetimeEpoch           tempmax           tempmin 
+##                15               262               268               264 
+##              temp      feelslikemax      feelslikemin         feelslike 
+##               270               270               264               271 
+##               dew          humidity            precip        precipprob 
+##               272               269               234               243 
+##       precipcover              snow         snowdepth          windgust 
+##               234                 1                 1               261 
+##         windspeed           winddir          pressure        cloudcover 
+##               252               273               271               271 
+##        visibility    solarradiation       solarenergy           uvindex 
+##               242               274               260               238 
+##        severerisk           sunrise      sunriseEpoch            sunset 
+##               234                45               274                44 
+##       sunsetEpoch         moonphase        conditions       description 
+##               274               250                 2                 4 
+##              icon            source              City        Temp_Range 
+##                 2                 2                 9               269 
+##        Heat_Index    Severity_Score             Month            Season 
+##               274               268                 1                 1 
+##       Day_of_Week        Is_Weekend Health_Risk_Score 
+##                 7                 2             27674</code></pre>
+<pre class="r"><code>#Dropping the unwanted columns
+df&lt;- subset(df, select = -c(Season,Month,snow,snowdepth)) 
+head(df)</code></pre>
+<pre><code>##     datetime datetimeEpoch tempmax tempmin temp feelslikemax feelslikemin
+## 1 07-09-2024      1.73e+09    89.0    62.1 73.3         88.6         62.1
+## 2 08-09-2024      1.73e+09    89.0    60.0 72.4         87.9         60.0
+## 3 10-09-2024      1.73e+09    79.4    59.6 67.8         79.4         59.6
+## 4 11-09-2024      1.73e+09    77.3    57.6 66.3         77.3         57.6
+## 5 12-09-2024      1.73e+09    79.2    57.8 67.4         79.2         57.8
+## 6 13-09-2024      1.73e+09    83.2    58.9 69.6         82.2         58.9
+##   feelslike  dew humidity precip precipprob precipcover windgust windspeed
+## 1      73.3 59.8     66.3      0          0           0     16.1       9.2
+## 2      72.3 57.6     62.5      0          0           0     13.9       8.1
+## 3      67.8 57.2     70.7      0          0           0     17.4       9.8
+## 4      66.3 56.8     73.1      0          4           0     23.0      13.4
+## 5      67.4 55.6     68.3      0          5           0     17.9      10.7
+## 6      69.5 54.2     60.5      0          0           0     16.1       8.9
+##   winddir pressure cloudcover visibility solarradiation solarenergy uvindex
+## 1     311     1012       12.0       10.0            268        23.4       9
+## 2     310     1012       15.6        9.8            279        24.1       9
+## 3     290     1012       18.8       12.4            275        23.8       9
+## 4     274     1010       17.3       15.0            264        22.6       8
+## 5     286     1007       14.2       15.0            262        22.6       8
+## 6     288     1007        5.9       15.0            263        22.5       8
+##   severerisk  sunrise sunriseEpoch   sunset sunsetEpoch moonphase conditions
+## 1         10 06:43:31     1.73e+09 19:26:34    1.73e+09      0.16      Clear
+## 2         10 06:44:20     1.73e+09 19:25:03    1.73e+09      0.19      Clear
+## 3         10 06:45:59     1.73e+09 19:22:01    1.73e+09      0.25      Clear
+## 4         10 06:46:48     1.73e+09 19:20:29    1.73e+09      0.29      Clear
+## 5         10 06:47:38     1.73e+09 19:18:57    1.73e+09      0.32      Clear
+## 6         10 06:48:27     1.73e+09 19:17:25    1.73e+09      0.36      Clear
+##                            description      icon source     City Temp_Range
+## 1 Clear conditions throughout the day. clear-day   comb San Jose       26.9
+## 2 Clear conditions throughout the day. clear-day   fcst San Jose       29.0
+## 3 Clear conditions throughout the day. clear-day   fcst San Jose       19.8
+## 4 Clear conditions throughout the day. clear-day   fcst San Jose       19.7
+## 5 Clear conditions throughout the day. clear-day   fcst San Jose       21.4
+## 6 Clear conditions throughout the day. clear-day   fcst San Jose       24.3
+##   Heat_Index Severity_Score Day_of_Week Is_Weekend Health_Risk_Score
+## 1       75.8           3.41    Saturday       True              9.85
+## 2       75.9           3.19      Sunday       True              9.59
+## 3       73.5           3.54     Tuesday      False              9.85
+## 4       72.9           3.90   Wednesday      False             10.14
+## 5       74.3           3.39    Thursday      False              9.75
+## 6       75.8           3.21      Friday      False              9.52</code></pre>
+<pre class="r"><code>dim(df)</code></pre>
+<pre><code>## [1] 27674    39</code></pre>
+</div>
+<div id="duplicates-and-missing-values-removal" class="section level2">
+<h2><strong>Duplicates and missing values removal</strong></h2>
+<pre class="r"><code>#Checking for duplicate rows
+duplicates &lt;- df %&gt;% duplicated() %&gt;% sum()
+print(paste(&quot;Number of duplicate rows:&quot;, duplicates))</code></pre>
+<pre><code>## [1] &quot;Number of duplicate rows: 0&quot;</code></pre>
+<pre class="r"><code>#Checking for missing values
+missing_values &lt;- colSums(is.na(df))
+print(missing_values)</code></pre>
+<pre><code>##          datetime     datetimeEpoch           tempmax           tempmin 
+##                 0                 0                 0                 0 
+##              temp      feelslikemax      feelslikemin         feelslike 
+##                 0                 0                 0                 0 
+##               dew          humidity            precip        precipprob 
+##                 0                 0                 0                 0 
+##       precipcover          windgust         windspeed           winddir 
+##                 0                 0                 0                 0 
+##          pressure        cloudcover        visibility    solarradiation 
+##                 0                 0                 0                 0 
+##       solarenergy           uvindex        severerisk           sunrise 
+##                 0                 0                 0                 0 
+##      sunriseEpoch            sunset       sunsetEpoch         moonphase 
+##                 0                 0                 0                 0 
+##        conditions       description              icon            source 
+##                 0                 0                 0                 0 
+##              City        Temp_Range        Heat_Index    Severity_Score 
+##                 0                 0                 0                 0 
+##       Day_of_Week        Is_Weekend Health_Risk_Score 
+##                 0                 0                 0</code></pre>
 </div>
 
 
