@@ -121,14 +121,32 @@ library(ggplot2)
 library(tidyr)
 library(reshape2)
 library(gridExtra)
-```WQ
+```
 
 ## **Data Loading**
 ```{r}
+#loading the data
+df=read.csv("air_quality_health_impact_data.csv")
+head(df)
 ```
 
 ## **Data Description and Summmary**
 ```{r}
+#Shape of the dataset
+paste("Row Count:",dim(df)[1],"Column Count:",dim(df)[2])
+```
+```{r}
+#comman stucture of the dataset
+str(df)
 ```
 
+```{r}
+#summary of the dataset
+summary(df)
+```
 
+```{r}
+#Checking for unique values in all the columns
+unique_counts <- sapply(df, function(x) length(unique(x)))
+unique_counts
+```
