@@ -190,11 +190,50 @@ print(paste("Number of duplicate rows:", duplicates))
 missing_values <- colSums(is.na(df))
 print(missing_values)
 ```
+
 ## **Outliers Removal**
 ```{r}
+#Visualizing the outliers
+numeric_cols <- df %>% select_if(is.numeric)
+num_cols <- ncol(numeric_cols)
+
+# Loop through numeric columns and create box plots
+for (col in colnames(numeric_cols)) {
+  boxplot(numeric_cols[[col]], 
+          main = paste("Boxplot of", col), 
+          ylab = col, 
+          col = "lightblue", 
+          border="darkblue")
+}
 ```
 
 ```{r}
+#Defining function to remove outliers using IQR approach
+remove_outliers <- function(data) {
+  for (col in names(data)) {
+    if (is.numeric(data[[col]])) {
+      Q1 <- quantile(data[[col]], 0.25)
+      Q3 <- quantile(data[[col]], 0.75)
+      IQR <- Q3 - Q1
+      lower_bound <- Q1 - 1.5 * IQR
+      upper_bound <- Q3 + 1.5 * IQR
+      
+      data <- data[data[[col]] >= lower_bound & data[[col]] <= upper_bound, ]
+    }
+  }
+  return(data)
+}
+```
+
+```{r}
+#remove outliers by applying the function
+df <- remove_outliers(df)
+head(df)
+```
+
+```{r}
+#Checking shape of the data after removing outliers
+paste("Row Count:",dim(df)[1],"Column Count:",dim(df)[2])
 ```
 
 
