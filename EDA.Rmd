@@ -288,3 +288,38 @@ boxplot(Health_Risk_Score ~ Is_Weekend, data = df,
 paste("The weak negative correlation of -0.24 suggests that higher temperatures are slightly associated with lower health risk scores, though the relationship is not strong")
 ```
 
+```{r}
+# Boxplot of Health Risk Score by City
+ggplot(df, aes(x = City, y = Health_Risk_Score, fill = City)) +
+  geom_boxplot() +
+  labs(title = "City-wise Health Risk Score", x = "City", y = "Health Risk Score") +
+  theme(axis.text.x = element_text(angle =90,hjust=1))
+```
+
+```{r}
+# Boxplot of Windgust by City
+ggplot(df, aes(x = City, y = windgust, fill = City)) +
+  geom_boxplot() +
+  labs(title = "City-wise windgust", x = "City", y = "Windgust") +
+  theme(axis.text.x = element_text(angle =90,hjust=1))
+```
+
+```{r}
+#Corrrelation between every columns
+constant_columns <- sapply(df, function(x) length(unique(x)) == 1)
+df <- df[, !constant_columns] 
+
+#correlation matrix
+cor_matrix <- cor(df[, sapply(df, is.numeric)])
+
+# Melt the correlation matrix for plotting
+melted_cor_matrix <- melt(cor_matrix)
+
+# Correlation heatmap
+ggplot(melted_cor_matrix, aes(Var1, Var2, fill = value)) +
+  geom_tile(color = "black") +
+  scale_fill_gradient2(low = "green", high = "violet", mid = "white", midpoint = 0, limit = c(-1, 1)) +
+  labs(title = "Correlation Heatmap", x = "", y = "") +
+  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1),axis.text.y = element_text(vjust=0,hjust=0))
+```
+
