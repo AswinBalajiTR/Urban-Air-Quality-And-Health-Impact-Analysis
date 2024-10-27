@@ -3,15 +3,15 @@ title: "**Urban Air Quality And Health Impact Analysis - EDA Project - Team 2**"
 author: "Abilasha Singh, Aswin Balaji Thippa Ramesh, Lixing Pan"
 date: "`r Sys.Date()`"
 output:
+  pdf_document:
+    toc: yes
+    toc_depth: '3'
   html_document:
     code_folding: hide
     number_sections: false
     toc: yes
     toc_depth: 3
     toc_float: yes
-  pdf_document:
-    toc: yes
-    toc_depth: '3'
 ---
 
 
@@ -305,7 +305,7 @@ ggplot(df, aes(x = City, y = windgust, fill = City)) +
 ```
 
 ```{r}
-#Correlation between every columns
+#Corrrelation between every columns
 constant_columns <- sapply(df, function(x) length(unique(x)) == 1)
 df <- df[, !constant_columns] 
 
@@ -324,8 +324,6 @@ ggplot(melted_cor_matrix, aes(Var1, Var2, fill = value)) +
 ```
 
 ```{r}
-paste("Does wind gust have a significant impact on the Health Risk Score?")
-
 paste("Correlation between windgust and Health risk :",cor(df$windgust, df$Health_Risk_Score))
 plot1<-ggplot(df, aes(x = windgust, y = Health_Risk_Score)) +
   geom_point(color = "#2993ae") +
@@ -374,134 +372,3 @@ plot5<-ggplot(df, aes(x = humidity, y = windgust)) +
 
 grid.arrange(plot1, plot2,plot3,plot4,plot5, ncol =2 )
 ```
-
-```{r}
-paste("Correlation between visibility and Health risk :",cor(df$windgust, df$Severity_Score))
-plot1<-ggplot(df, aes(x = visibility, y = Health_Risk_Score)) +
-  geom_point(color = "#287743") +
-  geom_smooth(method = "lm", color = "black") + # Adds a regression line
-  labs(title = "Visibility vs Health risk score", 
-       x = "visibility", 
-       y = "Health_Risk_Score") +
-  theme_minimal()
-
-# Calculate correlation
-paste("Correlation between sunsetEpoch and Health risk :",cor(df$Severity_Score, df$Health_Risk_Score))
-plot2<-ggplot(df, aes(x = sunsetEpoch, y = Health_Risk_Score)) +
-  geom_point(color = "#287743") +
-  geom_smooth(method = "lm", color = "black") + # Adds a regression line
-  labs(title = "Sunset Epoch vs Health Risk Score", 
-       x = "Sunset Epoch", 
-       y = "Health Risk Score") +
-  theme_minimal()
-
-paste("Correlation between sunriseEpoch and Health risk :",cor(df$windspeed, df$Health_Risk_Score))
-plot3<-ggplot(df, aes(x = sunriseEpoch, y = Health_Risk_Score)) +
-  geom_point(color = "#287743") +
-  geom_smooth(method = "lm", color = "black") + # Adds a regression line
-  labs(title = "Sunrise Epoch vs Health Risk Score", 
-       x = "Sunrise Epoch", 
-       y = "Health Risk Score") +
-  theme_minimal()
-
-paste("Correlation between moonphase and Health risk :",cor(df$windspeed, df$Health_Risk_Score))
-plot4<-ggplot(df, aes(x = moonphase, y = Health_Risk_Score)) +
-  geom_point(color = "#287743") +
-  geom_smooth(method = "lm", color = "black") + # Adds a regression line
-  labs(title = "Moon phase vs Health Risk Score", 
-       x = "Moon phase", 
-       y = "Health Risk Score") +
-  theme_minimal()
-
-grid.arrange(plot1, plot2,plot3,plot4, ncol = 2)
-```
-```{r}
-summary_stats <- df %>%
-  group_by(City) %>%
-  summarise(
-    Avg_Dew_Point = mean(dew, na.rm = TRUE),
-    Avg_Humidity = mean(humidity, na.rm = TRUE),
-    Avg_Pressure = mean(pressure, na.rm = TRUE),
-    Total_Precipitation = sum(precip, na.rm = TRUE),
-    pressure_a = sum(pressure, na.rm = TRUE),
-    .groups = 'drop'  # Drop grouping
-  )
-
-# Print summary statistics
-print(summary_stats)
-
-# Visualization
-
-# 1. Average Dew Point by City
-ggplot(summary_stats, aes(x = City, y = Avg_Dew_Point)) +
-  geom_bar(stat = "identity", fill = "lightblue") +
-  labs(title = "Average Dew Point by City", x = "City", y = "Average Dew Point") +
-  theme_minimal()
-
-# 2. Average Humidity by City
-ggplot(summary_stats, aes(x = City, y = Avg_Humidity)) +
-  geom_bar(stat = "identity", fill = "lightgreen") +
-  labs(title = "Average Humidity by City", x = "City", y = "Average Humidity") +
-  theme_minimal()
-
-# 3. Total Precipitation by City
-ggplot(summary_stats, aes(x = City, y = Total_Precipitation)) +
-  geom_bar(stat = "identity", fill = "lightcoral") +
-  labs(title = "Total Precipitation by City", x = "City", y = "Total Precipitation") +
-  theme_minimal()
-
-# 3. Pressue by City
-ggplot(summary_stats, aes(x = City, y = pressure_a)) +
-  geom_bar(stat = "identity", fill = "#909090") +
-  labs(title = "Pressure by City", x = "City", y = "Pressure") +
-  theme_minimal()
-```
-
-```{r}
-paste("How does the Health Risk Score vary over dates?")
-  
-# Convert datetime column to Date type (if not already done)
-df$datetime <- as.Date(df$datetime, format = "%d-%m-%Y")  # Adjust the format as needed
-
-# Extract month and day
-df$Month <- format(df$datetime, "%m")  # Extract month as numeric
-df$Day <- format(df$datetime, "%d")  # Extract day
-# Average Health Risk Score by Date
-daily_summary <- df %>%
-  group_by(datetime) %>%
-  summarise(Average_HRS = mean(Health_Risk_Score, na.rm = TRUE))
-
-print(head(daily_summary))  # Preview the summary
-library(ggplot2)
-
-ggplot(daily_summary, aes(x = datetime, y = Average_HRS)) +
-  geom_line( color = "blue") +
-  geom_point(size = 1, color = "red") +
-  labs(title = "Daily Average Health Risk Score Over Time", 
-       x = "Date", 
-       y = "Average Health Risk Score") +
-  scale_x_date(date_breaks = "2 day", date_labels = "%d %b")
-```
-
-```{r}
-daily_summary <- df %>%
-  group_by(City, datetime) %>%  # Group by city and date
-  summarise(Average_HRS = mean(Health_Risk_Score, na.rm = TRUE))
-
-print(head(daily_summary))  # Preview the summary
-
-# Load ggplot2 if not already loaded
-library(ggplot2)
-
-# Plot average Health Risk Score for each city
-ggplot(daily_summary, aes(x = datetime, y = Average_HRS, color = City)) +
-  geom_line() +  # Line for average scores
-  geom_point(size = 1) +  # Points for average scores
-  labs(title = "Health Risk Score Over Time by City", 
-       x = "Date", 
-       y = "Average Health Risk Score") +
-  scale_x_date(date_breaks = "2 day", date_labels = "%d %b") +
-  theme_minimal() +  # Use a minimal theme for better visualization
-  theme(legend.position = "bottom")  # Place legend at the bottom
-```
-

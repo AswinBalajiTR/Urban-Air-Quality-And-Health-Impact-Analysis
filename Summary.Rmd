@@ -496,16 +496,22 @@ ggplot(daily_summary, aes(x = datetime, y = Average_HRS, color = City)) +
 
 <span style="color:navy;">Health Risk Variation: Health risk scores are higher on weekends compared to weekdays, indicating greater risks during weekends.</span>
 
-<span style="color:navy;">City Comparison: San Jose has the highest health risk and wind gusts, while Philadelphia shows the lowest health risk.</span>
+<span style="color:navy;">City Comparison: San Jose has the highest health risk and wind gusts, while Philadelphia shows the lowest health risk and wind gusts.</span>
 
 <span style="color:navy;">Meteorological Impact: Wind gusts significantly increase health risk scores, while temperature has a weaker influence.</span>
 
-<span style="color:navy;">Humidity and Health: Health risk scores fluctuate with changes in wind gusts, peaking in early September.</span>
+<span style="color:navy;">Humidity and Health: Humidity was found to have a moderate positive correlation with health risk scores.</span>
 
 <span style="color:navy;">Key Factors: Wind-related factors increase health risks, while visibility and sunrise/sunset times lowers them indirectly.
 </span>
 
 <span style="color:navy;font-weight:bold;font-size: 13pt">6. Further Research and Limitations</span><br>
+
+<span style="color:navy;">Standardize and screen health risk data sources and expand the research cities and scope</span>
+
+<span style="color:navy;">Conducting time-series analyses to explore the relationship between seasonal meteorological factors and health risks.</span>
+
+<span style="color:navy;">Developing strategies to mitigate the adverse health impacts of extreme weather conditions, especially in areas with high wind or humidity levels.</span>
 
 <span style="color:navy;font-weight:bold;font-size: 13pt">7. References</span><br><br>
 
