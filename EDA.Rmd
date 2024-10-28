@@ -3,15 +3,15 @@ title: "**Urban Air Quality And Health Impact Analysis - EDA Project - Team 2**"
 author: "Abilasha Singh, Aswin Balaji Thippa Ramesh, Lixing Pan"
 date: "`r Sys.Date()`"
 output:
-  pdf_document:
-    toc: yes
-    toc_depth: '3'
   html_document:
     code_folding: hide
     number_sections: false
     toc: yes
     toc_depth: 3
     toc_float: yes
+  pdf_document:
+    toc: yes
+    toc_depth: '3'
 ---
 
 
@@ -114,6 +114,9 @@ options(scientific=T, digits = 3)
 
 **Health_Risk_Score** | Score representing the potential health risk based on weather and air quality conditions.
 
+
+
+
 ```{r}
 library(dplyr)
 library(ezids)
@@ -122,6 +125,16 @@ library(tidyr)
 library(reshape2)
 library(gridExtra)
 ```
+
+**Libraries Used**
+
+- **dplyr**: Facilitates data manipulation with functions for filtering, transforming, and summarizing data frames efficiently.
+- **ezids**: Provides tools for generating, validating, and managing unique identifiers, essential for consistent data management.
+- **ggplot2**: A powerful data visualization library that implements the Grammar of Graphics to create layered and customizable plots.
+- **tidyr**: Simplifies the data tidying process with functions for reshaping data, including pivoting to wide and long formats.
+- **reshape2**: Complements `tidyr` by offering tools for reshaping data between wide and long formats, ideal for complex data structures.
+- **gridExtra**: Allows for arranging multiple `ggplot` objects and other grid-based plots on a single page, useful for comparisons.
+
 
 ## **Data Loading**
 ```{r}
@@ -136,10 +149,24 @@ head(df)
 paste("Row Count:",dim(df)[1],"Column Count:",dim(df)[2])
 ```
 
+This indicates that the dataset contains **27,674** observations (rows) across **43** variables (columns), making it a substantial dataset for in-depth analysis.
+
+
 ```{r}
 #Structure of the dataset
 str(df)
 ```
+**Dataset Structure**
+
+
+Using the `str(df)` function, we inspect the dataset’s structure. This command provides a summary of each variable in the dataset, including:
+
+- Data types (e.g., numeric, character).
+- Sample values for each column.
+- Overall dimensions of the dataset, confirming that it has 27,674 rows and 43 columns.
+
+This inspection helps in understanding the types of data we’re working with, identifies any potential data cleaning needs, and sets up the foundation for the analysis by showing variable names and formats.
+
 
 ## **Appropriate Datatype Conversion**
 ```{r}
@@ -159,11 +186,22 @@ df$Is_Weekend <- as.factor(df$Is_Weekend)
 #Checking for datatype of every column
 sapply(df, class)
 ```
+To ensure accurate data processing, the code converts specific columns to the appropriate data types using the `as.factor()` function. This is essential for categorical variables, allowing for efficient analysis and visualization. The following columns are converted to factors: `conditions`, `description`, `icon`, `source`, `City`, `Month`, `Season`, `Day_of_Week`, and `Is_Weekend`. These variables are now treated as categorical data, which is important for statistical modeling and plotting.
+
+After conversion, the `sapply(df, class)` function is used to check the data type of each column. This verification step confirms the conversions and provides an overview of all column data types:
+
+- **Factor**: Categorical variables such as weather conditions, city, season, and day of the week.
+- **Character**: Text-based columns like `datetime`, `sunrise`, and `sunset`.
+- **Numeric**: Continuous variables such as temperature, humidity, and health risk scores.
+
+This setup prepares the data for analysis by ensuring each variable is in a format suited to its type.
+
 
 ```{r}
 #summary of the dataset
 summary(df)
 ```
+
 ## **Dropping of unwanted columns**
 ```{r}
 #Checking for unique values in all the columns
@@ -178,6 +216,8 @@ head(df)
 dim(df)
 ```
 
+The code checks for the number of unique values in each column of the dataset to identify unnecessary columns. Based on this assessment, columns such as `Season`, `Month`, `snow`, and `snowdepth` are dropped from the dataframe to streamline the analysis. The updated dataframe is then displayed along with its dimensions.
+
 ## **Duplicates and missing values removal**
 ```{r}
 #Checking for duplicate rows
@@ -190,6 +230,7 @@ print(paste("Number of duplicate rows:", duplicates))
 missing_values <- colSums(is.na(df))
 print(missing_values)
 ```
+We found **no duplicate rows** in the dataset, confirming data integrity. Additionally, all columns were checked for missing values, and we confirmed that there are **zero missing values** across the dataset, indicating complete data availability.
 
 ## **Outliers Removal**
 ```{r}
@@ -235,6 +276,9 @@ head(df)
 #Checking shape of the data after removing outliers
 paste("Row Count:",dim(df)[1],"Column Count:",dim(df)[2])
 ```
+
+We identified potential outliers using a box plot, which visualizes the distribution of the data and highlights values outside the whiskers. Outliers were defined as data points lying beyond 1.5 times the IQR above the third quartile or below the first quartile. These outliers were then removed to improve data quality for further analysis.
+
 
 ## **Univariate Analysis**
 ```{r}
@@ -285,16 +329,17 @@ boxplot(Health_Risk_Score ~ Is_Weekend, data = df,
 ```
 
 ```{r}
-paste("The weak negative correlation of -0.24 suggests that higher temperatures are slightly associated with lower health risk scores, though the relationship is not strong")
-```
-
-```{r}
 # Boxplot of Health Risk Score by City
 ggplot(df, aes(x = City, y = Health_Risk_Score, fill = City)) +
   geom_boxplot() +
   labs(title = "City-wise Health Risk Score", x = "City", y = "Health Risk Score") +
   theme(axis.text.x = element_text(angle =90,hjust=1))
 ```
+**Key Observations**
+
+- San Jose shows the widest IQR, indicating greater variability in health risk scores.
+- Philadelphia has the lowest median health risk score, while New York City has the highest.
+- Outliers are present in all cities, with New York City showing the most extreme values.
 
 ```{r}
 # Boxplot of Windgust by City
@@ -302,6 +347,53 @@ ggplot(df, aes(x = City, y = windgust, fill = City)) +
   geom_boxplot() +
   labs(title = "City-wise windgust", x = "City", y = "Windgust") +
   theme(axis.text.x = element_text(angle =90,hjust=1))
+```
+**Key Observations**
+
+- San Jose exhibits the widest IQR, indicating the most variability in wind gust speeds among the cities.
+- Philadelphia has the lowest median wind gust speed, while Chicago has a relatively high median.
+- New York City shows a few outliers, indicating instances of unusually high wind gust speeds.
+
+```{r}
+summary_stats <- df %>%
+  group_by(City) %>%
+  summarise(
+    Avg_Dew_Point = mean(dew, na.rm = TRUE),
+    Avg_Humidity = mean(humidity, na.rm = TRUE),
+    Avg_Pressure = mean(pressure, na.rm = TRUE),
+    Total_Precipitation = sum(precip, na.rm = TRUE),
+    pressure_a = sum(pressure, na.rm = TRUE),
+    .groups = 'drop'  # Drop grouping
+  )
+
+# Print summary statistics
+print(summary_stats)
+
+# Visualization
+
+# 1. Average Dew Point by City
+ggplot(summary_stats, aes(x = City, y = Avg_Dew_Point)) +
+  geom_bar(stat = "identity", fill = "lightblue") +
+  labs(title = "Average Dew Point by City", x = "City", y = "Average Dew Point") +
+  theme_minimal()
+
+# 2. Average Humidity by City
+ggplot(summary_stats, aes(x = City, y = Avg_Humidity)) +
+  geom_bar(stat = "identity", fill = "lightgreen") +
+  labs(title = "Average Humidity by City", x = "City", y = "Average Humidity") +
+  theme_minimal()
+
+# 3. Total Precipitation by City
+ggplot(summary_stats, aes(x = City, y = Total_Precipitation)) +
+  geom_bar(stat = "identity", fill = "lightcoral") +
+  labs(title = "Total Precipitation by City", x = "City", y = "Total Precipitation") +
+  theme_minimal()
+
+# 3. Pressue by City
+ggplot(summary_stats, aes(x = City, y = pressure_a)) +
+  geom_bar(stat = "identity", fill = "#909090") +
+  labs(title = "Pressure by City", x = "City", y = "Pressure") +
+  theme_minimal()
 ```
 
 ```{r}
@@ -322,6 +414,25 @@ ggplot(melted_cor_matrix, aes(Var1, Var2, fill = value)) +
   labs(title = "Correlation Heatmap", x = "", y = "") +
   theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1),axis.text.y = element_text(vjust=0,hjust=0))
 ```
+**Correlation with Health Risk Score**
+
+A positive correlation means that as one variable increases, the other also increases. Conversely, a negative correlation means that as one variable increases, the other decreases.
+
+Top **positive correlations:**
+
+1. **Severity Score**: Strong positive link.
+2. **Heat Index**: Significant positive association.
+3. **Temperature Range**: Moderate positive correlation.
+4. **Windgust**: Mild positive correlation.
+
+Top **negative correlations:**
+
+1. **Visibility**: Strong negative association.
+2. **Solarenergy**: Significant negative correlation.
+3. **Dew Point**: Moderate negative link.
+4. **Humidity**: Mild negative correlation.
+
+These indicate key factors influencing health risk scores.
 
 ```{r}
 paste("Correlation between windgust and Health risk :",cor(df$windgust, df$Health_Risk_Score))
@@ -372,3 +483,149 @@ plot5<-ggplot(df, aes(x = humidity, y = windgust)) +
 
 grid.arrange(plot1, plot2,plot3,plot4,plot5, ncol =2 )
 ```
+
+The following analysis explores the relationships between environmental factors—such as wind gusts, severity score, wind speed, and humidity—and health risk scores.
+
+1. **Direct Relationships with Health Risk Score**:
+    - **Wind Gusts**: The scatter plot shows a slight positive trend, suggesting that higher wind gusts are associated with a marginal increase in health risk scores.
+    - **Severity Score**: A strong positive correlation is observed, indicating that an increase in severity score corresponds to a notable rise in health risk scores.
+    - **Wind Speed**: Wind speed also displays a positive relationship with health risk score, implying that as wind speed increases, so does the health risk.
+    - **Humidity**: There is a positive association between humidity levels and health risk scores, with higher humidity associated with increased health risks.
+
+2. **Indirect Influence of Humidity**:
+    - **Humidity vs. Wind Gust**: The scatter plot shows a slight positive correlation, suggesting that higher humidity may contribute to increased wind gusts. Since wind gusts are directly linked with higher health risk scores, this indicates that humidity may indirectly influence health risks through its effect on wind conditions.
+    
+```{r}
+paste("Correlation between visibility and Health risk :",cor(df$windgust, df$Severity_Score))
+plot1<-ggplot(df, aes(x = visibility, y = Health_Risk_Score)) +
+  geom_point(color = "#287743") +
+  geom_smooth(method = "lm", color = "black") + # Adds a regression line
+  labs(title = "Visibility vs Health risk score", 
+       x = "visibility", 
+       y = "Health_Risk_Score") +
+  theme_minimal()
+
+# Calculate correlation
+paste("Correlation between sunsetEpoch and Health risk :",cor(df$Severity_Score, df$Health_Risk_Score))
+plot2<-ggplot(df, aes(x = sunsetEpoch, y = Health_Risk_Score)) +
+  geom_point(color = "#287743") +
+  geom_smooth(method = "lm", color = "black") + # Adds a regression line
+  labs(title = "Sunset Epoch vs Health Risk Score", 
+       x = "Sunset Epoch", 
+       y = "Health Risk Score") +
+  theme_minimal()
+
+paste("Correlation between sunriseEpoch and Health risk :",cor(df$windspeed, df$Health_Risk_Score))
+plot3<-ggplot(df, aes(x = sunriseEpoch, y = Health_Risk_Score)) +
+  geom_point(color = "#287743") +
+  geom_smooth(method = "lm", color = "black") + # Adds a regression line
+  labs(title = "Sunrise Epoch vs Health Risk Score", 
+       x = "Sunrise Epoch", 
+       y = "Health Risk Score") +
+  theme_minimal()
+
+paste("Correlation between moonphase and Health risk :",cor(df$windspeed, df$Health_Risk_Score))
+plot4<-ggplot(df, aes(x = moonphase, y = Health_Risk_Score)) +
+  geom_point(color = "#287743") +
+  geom_smooth(method = "lm", color = "black") + # Adds a regression line
+  labs(title = "Moon phase vs Health Risk Score", 
+       x = "Moon phase", 
+       y = "Health Risk Score") +
+  theme_minimal()
+
+grid.arrange(plot1, plot2,plot3,plot4, ncol = 2)
+```
+This analysis examines the relationship between certain environmental and astronomical factors—visibility, sunset epoch, sunrise epoch, and moon phase—and health risk scores.
+
+
+- **Visibility**: The plot shows a slight negative correlation between visibility and health risk score. Higher visibility tends to be associated with lower health risks.
+- **Sunset Epoch**: There is a negative trend between sunset time and health risk score, suggesting that later sunsets may be linked to reduced health risks.
+- **Sunrise Epoch**: Similarly, a negative trend is observed between sunrise time and health risk score, with later sunrises associated with lower health risks.
+- **Moon Phase**: The moon phase also shows a negative correlation with health risk score. As the moon progresses through its cycle, the health risk score tends to decrease.
+
+
+These environmental and astronomical factors may subtly influence health risk scores. Clearer atmospheric conditions, later times of sunrise and sunset, and certain phases of the moon are associated with reduced health risks, suggesting possible connections between these natural phenomena and health outcomes.
+
+
+
+<span style="color:navy;">Both health risk and wind gust scores fluctuate similarly over time, peaking around September 8th and declining sharply by mid- September. Health risk score is being influenced by windgust.</span>
+
+```{r}
+paste("How does the windgust vary over dates?")
+  
+# Convert datetime column to Date type (if not already done)
+df$datetime <- as.Date(df$datetime, format = "%d-%m-%Y")  # Adjust the format as needed
+
+# Extract month and day
+df$Month <- format(df$datetime, "%m")  # Extract month as numeric
+df$Day <- format(df$datetime, "%d")  # Extract day
+# Average Health Risk Score by Date
+daily_summary <- df %>%
+  group_by(datetime) %>%
+  summarise(Average_HRS = mean(windgust, na.rm = TRUE))
+
+print(head(daily_summary))  # Preview the summary
+library(ggplot2)
+
+ggplot(daily_summary, aes(x = datetime, y = Average_HRS)) +
+  geom_line( color = "blue") +
+  geom_point(size = 1, color = "red") +
+  labs(title = "Daily Windgust Score Over Time", 
+       x = "Date", 
+       y = "Windgust") +
+  scale_x_date(date_breaks = "2 day", date_labels = "%d %b")
+```
+
+
+```{r}
+paste("How does the Health Risk Score vary over dates?")
+  
+# Convert datetime column to Date type (if not already done)
+df$datetime <- as.Date(df$datetime, format = "%d-%m-%Y")  # Adjust the format as needed
+
+# Extract month and day
+df$Month <- format(df$datetime, "%m")  # Extract month as numeric
+df$Day <- format(df$datetime, "%d")  # Extract day
+# Average Health Risk Score by Date
+daily_summary <- df %>%
+  group_by(datetime) %>%
+  summarise(Average_HRS = mean(Health_Risk_Score, na.rm = TRUE))
+
+print(head(daily_summary))  # Preview the summary
+library(ggplot2)
+
+ggplot(daily_summary, aes(x = datetime, y = Average_HRS)) +
+  geom_line( color = "blue") +
+  geom_point(size = 1, color = "red") +
+  labs(title = "Daily Average Health Risk Score Over Time", 
+       x = "Date", 
+       y = "Average Health Risk Score") +
+  scale_x_date(date_breaks = "2 day", date_labels = "%d %b")
+```
+Both graphs display a similar trend over the month of September. Initially, wind gusts are high, and health risk scores are elevated. As the month progresses, both the wind gust intensity and health risk scores decrease. By the end of the month, these values stabilize at lower levels. This refers to the correlation where reduced wind gusts are associated with lower health risks.
+
+
+```{r}
+daily_summary <- df %>%
+  group_by(City, datetime) %>%  # Group by city and date
+  summarise(Average_HRS = mean(Health_Risk_Score, na.rm = TRUE))
+
+print(head(daily_summary))  # Preview the summary
+
+# Load ggplot2 if not already loaded
+library(ggplot2)
+
+# Plot average Health Risk Score for each city
+ggplot(daily_summary, aes(x = datetime, y = Average_HRS, color = City)) +
+  geom_line() +  # Line for average scores
+  geom_point(size = 1) +  # Points for average scores
+  labs(title = "Health Risk Score Over Time by City", 
+       x = "Date", 
+       y = "Average Health Risk Score") +
+  scale_x_date(date_breaks = "2 day", date_labels = "%d %b") +
+  theme_minimal() +  # Use a minimal theme for better visualization
+  theme(legend.position = "bottom")  # Place legend at the bottom
+```
+
+
+

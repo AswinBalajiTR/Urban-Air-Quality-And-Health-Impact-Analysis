@@ -1,35 +1,56 @@
 ---
-title: "<span style='color:green; font-weight:bold;'>Urban Air Quality And Health Impact Analysis<br>   <span style='color:yellowgreen;font-size: 22pt'>EDA Project 1 - Team 2</span>"
-author: "<span style='color:olive;'>Abilasha Singh, Aswin Balaji Thippa Ramesh, Lixing Pan</span><br><br>"
+title: "**Urban Air Quality And Health Impact Analysis**"
+author: "Abilasha Singh, Aswin Balaji Thippa Ramesh, Lixing Pan"
 output:
   html_document:
     code_folding: hide
     number_sections: false
-    toc: false  
+    toc: yes
     toc_depth: 3
-    toc_float: true
-    theme: flatly
+    toc_float: yes
   pdf_document:
-    toc: false 
-    toc_depth: 3
+    toc: yes
+    toc_depth: '3'
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
-options(scipen=9, digits = 6)
+knitr::opts_chunk$set(warning = F, message = F)
+options(scientific=T, digits = 3) 
 ```
-<span style="color:green; font-weight:bold; font-size: 20pt;">Research Summary</span><br>
-<span style="color:navy;font-weight:bold;font-size: 13pt">1. Introduction</span><br>
+# **Introduction**
 
-<span style="color:navy;">Rising concerns about urban air quality and its impact on public health have prompted researchers to investigate the intricate links between environmental factors and health outcomes. This report provides a thorough analysis of how weather conditions relate to health risk scores in different cities during September. To achieve this, we began by developing several SMART questions focused on understanding how factors like temperature, humidity, and wind speed affect health risk scores. To reach our goals, we performed a detailed exploratory data analysis (EDA) to uncover patterns and trends in the dataset. We also used appropriate statistical tests to validate our findings and draw meaningful conclusions. This report aims to clarify the connections between environmental conditions and health.</span><br>
+Rising concerns about urban air quality and its impact on public health have prompted researchers to investigate the intricate links between environmental factors and health outcomes. This report provides a thorough analysis of how weather conditions relate to health risk scores in different cities during September. To achieve this, we began by developing several SMART questions focused on understanding how factors like temperature, humidity, and wind speed affect health risk scores. To reach our goals, we performed a detailed exploratory data analysis (EDA) to uncover patterns and trends in the dataset. We also used appropriate statistical tests to validate our findings and draw meaningful conclusions. This report aims to clarify the connections between environmental conditions and health
 
-<span style="color:navy;font-weight:bold;font-size: 13pt">2. Dataset Summary</span><br>
+# **Dataset Summary**
 
-<span style="color:navy;font-weight:bold;font-size: 11pt">2.1  Dataset Overview</span><br>
+### a) Data Source
 
-<span style="color:navy;">The dataset comprises a collection of 27,674 observations related to meteorological and environmental data, including temperature, humidity, and wind speed, recorded across across seven major U.S. cities for the month of September. It contains a total of 43 variables, such as Health Risk Score and Severity Score, providing a detailed view of daily atmospheric conditions.Key variables such as temperature, humidity, wind speed, visibility, and weather descriptions enable an in-depth analysis of how urban air quality affects health.</span>
+The dataset is presumed to originate from a weather forecasting or environmental aggregation service and is sourced from the Kaggle website.
 
-```{r,results='hide'}
+### b) Dataset Limitations
+
+The dataset has temporal and spatial limitations, as it only contains data from September and a limited number of cities. This may not adequately represent the weather patterns over a broader range of years or the associated health risks. Furthermore, it lacks several important variables that could clarify how health risks were calculated, potentially overlooking significant factors that impact health.
+
+# **Scope and SMART Questions**
+
+Key variables such as `temperature`, `humidity`, `wind speed`, `visibility`, and `weather descriptions` facilitate a comprehensive analysis of the effects of urban air quality on health. 
+
+To guide our investigation, we have formulated several SMART questions:
+
+1. How do health risk scores differ between weekdays and weekends?
+
+2. How do key meteorological factors vary across different cities?
+
+3. Which key meteorological factors significantly influence health risk scores?
+
+4. How might changes in humidity affect overall health?
+
+5. How do wind speed and health risk scores vary over time?
+
+These questions will help us effectively explore the connections between environmental conditions and health outcomes.
+
+
+```{r,include = FALSE}
 library(dplyr)
 library(ezids)
 library(ggplot2)
@@ -37,49 +58,50 @@ library(tidyr)
 library(reshape2)
 library(gridExtra)
 ```
-<span style="color:navy;font-weight:bold;font-size: 10pt">Data Loading</span><br>
+# **Data Loading and Data Description**
 
+### a) Data Loading
 ```{r}
 #loading the data
 df=read.csv("air_quality_health_impact_data.csv")
 head(df)
 ```
-<span style="color:navy;font-weight:bold;font-size: 10pt">Data Description and Summmary</span><br>
+
+
+### b) Shape of the Dataset
+
 ```{r}
 #Shape of the dataset
 paste("Row Count:",dim(df)[1],"Column Count:",dim(df)[2])
 ```
 
+The dataset comprises a collection of **27,674** observations related to meteorological and environmental data, including temperature, humidity, and wind speed, recorded across across seven major U.S. cities for the month of September. It contains a total of **43** variables, such as `Health Risk Score` and `Severity Score`, providing a detailed view of daily atmospheric conditions.Key variables such as `temperature`, `humidity`, `wind speed`, `visibility`, and `weather descriptions` enable an in-depth analysis of how urban air quality affects health.</span>
+
+### c) Structure of the Dataset
 ```{r}
 #Structure of the dataset
 str(df)
 ```
-<span style="color:navy;font-weight:bold;font-size: 11pt">2.2  Data Source</span><br>
+```{r}
+#summary of the dataset
+summary(df)
+```
 
-<span style="color:navy;">The dataset is presumed to originate from a weather forecasting or environmental aggregation service and is sourced from the Kaggle website.</span>
 
-<span style="color:navy;font-weight:bold;font-size: 11pt">2.3  Scope and SMART Questions</span><br>
+We inspect the dataset’s structure and it provides a summary of each variable in the dataset, including:
 
-<span style="color:navy;">Key variables such as temperature, humidity, wind speed, visibility, and weather descriptions facilitate a comprehensive analysis of the effects of urban air quality on health. To guide our investigation, we have formulated several SMART questions:</span><br>
-<span style="color:navy;">
-1.How health risk scores differ between weekdays and weekends?<br>
-2.Analyzing how key meteorological factors vary across different cities.<br>
-3.Investigating the key meteorological factors that significantly influence health risk scores?<br>
-4.How changes in humidity might affect overall health?<br>
-5.Examining how wind speed and health risk scores vary over days.</span><br>
+- Data types (e.g., numeric, character).
+- Sample values for each column.
+- Overall dimensions of the dataset, confirming that it has 27,674 rows and 43 columns.
 
-<span style="color:navy;">These questions will help us effectively explore the connections between environmental conditions and health outcomes.
-</span><br>
+This inspection helps in understanding the types of data we’re working with, identifies any potential data cleaning needs, and sets up the foundation for the analysis by showing variable names and formats.
 
-<span style="color:navy;font-weight:bold;font-size: 13pt">3. Limitations of the Dataset</span><br>
 
-<span style="color:navy;">The dataset has temporal and spatial limitations, as it only contains data from September and a limited number of cities. This may not adequately represent the weather patterns over a broader range of years or the associated health risks. Furthermore, it lacks several important variables that could clarify how health risks were calculated, potentially overlooking significant factors that impact health.</span>
+# **Data Cleaning**
 
-<span style="color:navy;font-weight:bold;font-size: 13pt">4. Exploratory Data Analysis</span><br>
+### a) Appropriate Datatype Conversion
 
-<span style="color:navy;font-weight:bold;font-size: 11pt">4.1 Appropriate Datatype Conversion</span><br>
-
-<span style="color:navy;">Out of 43 variables, 9 variables are factor, 30 are numeric, and 3 are character.</span>
+To ensure accurate data processing, we convert specific columns to the appropriate data types using the `as.factor()` function. This is essential for categorical variables, allowing for efficient analysis and visualization. The following columns are converted to factors: `conditions`, `description`, `icon`, `source`, `City`, `Month`, `Season`, `Day_of_Week`, and `Is_Weekend`. These variables are now treated as categorical data, which is important for statistical modeling and plotting.
 
 ```{r}
 #Converting required columns as a factor variable
@@ -99,14 +121,24 @@ df$Is_Weekend <- as.factor(df$Is_Weekend)
 sapply(df, class)
 ```
 
+After conversion, we check the data type of each column. This verification step confirms the conversions and provides an overview of all column data types:
+
+- **Factor**: Categorical variables such as weather conditions, city, season, and day of the week.
+- **Character**: Text-based columns like `datetime`, `sunrise`, and `sunset`.
+- **Numeric**: Continuous variables such as temperature, humidity, and health risk scores.
+
+Out of 43 variables, 9 variables are factor, 30 are numeric, and 3 are character.
+
+This setup prepares the data for analysis by ensuring each variable is in a format suited to its type.
+
 ```{r}
 #summary of the dataset
 summary(df)
 ```
 
-<span style="color:navy;font-weight:bold;font-size: 11pt">4.2 Dropping unwanted columns</span><br>
+<span style="color:navy;"></span>
 
-<span style="color:navy;">Dropping season , snow, snowdepth and month columns as they have single value.</span>
+### b) Dropping Unwanted Columns
 
 ```{r}
 #Checking for unique values in all the columns
@@ -121,9 +153,9 @@ head(df)
 dim(df)
 ```
 
-<span style="color:navy;font-weight:bold;font-size: 11pt">4.3 Duplicates and missing values removal</span><br>
+We check for the number of unique values in each column of the dataset to identify unnecessary columns. Based on this assessment, columns such as `Season`, `Month`, `snow`, and `snowdepth` are dropped from the dataframe as they have single value to streamline the analysis. The updated dataframe is then displayed along with its dimensions. 
 
-<span style="color:navy;">No missing values and duplicate rows</span>
+### c) Duplicates and missing values removal
 
 ```{r}
 #Checking for duplicate rows
@@ -137,10 +169,9 @@ missing_values <- colSums(is.na(df))
 print(missing_values)
 ```
 
-<span style="color:navy;font-weight:bold;font-size: 11pt">4.4 Outliers Removal</span><br>
+We found **no duplicate rows** in the dataset, confirming data integrity. Additionally, all columns were checked for missing values, and we confirmed that there are **zero missing values** across the dataset, indicating complete data availability.
 
-<span style="color:navy;">After removing the outliers, we are left with 18885 observations
-</span>
+### d) Outliers Removal
 
 ```{r}
 #Visualizing the outliers
@@ -186,9 +217,11 @@ head(df)
 paste("Row Count:",dim(df)[1],"Column Count:",dim(df)[2])
 ```
 
-<span style="color:navy;font-weight:bold;font-size: 11pt">4.5 Univariate Analysis</span><br>
+We identified potential outliers using a box plot, which visualizes the distribution of the data and highlights values outside the whiskers. Outliers were defined as data points lying beyond 1.5 times the IQR above the third quartile or below the first quartile. These outliers were then removed to improve data quality for further analysis.After removing the outliers, we are left with 18885 observations
 
-<span style="color:navy;">Most of the population has health risk scores around 9.0, with a small subset showing elevated scores near 10.0.</span>
+# **Exploratory Data Analysis**
+
+### a) Univariate Analysis
 
 ```{r}
 # Distribution of Health Risk Score
@@ -197,13 +230,132 @@ ggplot(df, aes(x = Health_Risk_Score)) +
   labs(title = "Distribution of Health Risk Score", x = "Health Risk Score", y = "Frequency")
 ```
 
+Most of the population has health risk scores around 9.0, with a small subset showing elevated scores near 10.0.
+
+### b) Bivariate and Multivariate Analysis</span><br>
+
+
+
 ```{r}
-paste("The majority of the population has health risk scores around 9.0, with a small subset showing elevated scores near 10.0.")
+summary_stats <- df %>%
+  group_by(City) %>%
+  summarise(
+    Avg_Dew_Point = mean(dew, na.rm = TRUE),
+    Avg_Humidity = mean(humidity, na.rm = TRUE),
+    Avg_Pressure = mean(pressure, na.rm = TRUE),
+    Total_Precipitation = sum(precip, na.rm = TRUE),
+    pressure_a = sum(pressure, na.rm = TRUE),
+    .groups = 'drop'  # Drop grouping
+  )
+
+# Print summary statistics
+print(summary_stats)
+
+# Visualization
+
+# 1. Average Dew Point by City
+ggplot(summary_stats, aes(x = City, y = Avg_Dew_Point)) +
+  geom_bar(stat = "identity", fill = "lightblue") +
+  labs(title = "Average Dew Point by City", x = "City", y = "Average Dew Point") +
+  theme_minimal()
+
+# 2. Average Humidity by City
+ggplot(summary_stats, aes(x = City, y = Avg_Humidity)) +
+  geom_bar(stat = "identity", fill = "lightgreen") +
+  labs(title = "Average Humidity by City", x = "City", y = "Average Humidity") +
+  theme_minimal()
+
+# 3. Total Precipitation by City
+ggplot(summary_stats, aes(x = City, y = Total_Precipitation)) +
+  geom_bar(stat = "identity", fill = "lightcoral") +
+  labs(title = "Total Precipitation by City", x = "City", y = "Total Precipitation") +
+  theme_minimal()
+
+# 3. Pressue by City
+ggplot(summary_stats, aes(x = City, y = pressure_a)) +
+  geom_bar(stat = "identity", fill = "#909090") +
+  labs(title = "Pressure by City", x = "City", y = "Pressure") +
+  theme_minimal()
 ```
 
-<span style="color:navy;font-weight:bold;font-size: 11pt">4.6 Bivariate and Multivariate Analysis</span><br>
 
-<span style="color:navy;">There is a significant difference in Health Risk Scores between weekends and weekdays. Scores are generally higher on weekends than on weekdays, indicating increased health risks during weekends</span>
+This analysis explores key climate metrics—average dew point, average humidity, total precipitation, and atmospheric pressure across several major U.S. cities. These insights into varying atmospheric conditions can aid in understanding urban air quality and its potential health impacts.
+
+**Average Dew Point by City**  
+The average dew point reflects humidity levels across the cities analyzed. Houston and San Diego experience the highest average dew points (around 60°F), indicating more humid conditions in these areas. Los Angeles, however, has the lowest dew point, suggesting a drier climate.
+
+**Average Humidity by City**  
+The humidity chart highlights varying levels of moisture content. Cities like San Diego and Philadelphia have high humidity levels, exceeding 60%, which points to significant moisture in the air. In contrast, San Antonio and Dallas show relatively lower humidity levels, indicating generally drier conditions.
+
+**Total Precipitation by City**  
+This analysis shows the total precipitation levels across cities. Los Angeles and New York City have substantially higher precipitation, reflecting wetter climates or specific weather patterns. In contrast, cities like Chicago and San Jose show negative values, which could indicate dry spells, measurement anomalies, or a focus on the net precipitation balance.
+
+**Pressure by City**  
+The atmospheric pressure plot reveals average pressure levels across cities. New York City and Philadelphia exhibit higher cumulative pressure values, suggesting stable atmospheric conditions. Lower pressure values in San Diego and Los Angeles may indicate greater variability in atmospheric conditions in these cities.
+
+The following points provides a detailed breakdown of various metrics across cities:
+
+- **Avg_Dew_Point**: Average dew point temperature, highest in Houston and San Diego.
+
+- **Avg_Humidity**: Average humidity levels, with San Diego and Philadelphia exhibiting significant moisture content.
+
+- **Avg_Pressure**: Average atmospheric pressure, with New York City and Philadelphia on the higher end.
+
+- **Total_Precipitation**: Net precipitation, showing substantial totals in Los Angeles and New York City, while San Jose has a negative value.
+
+- **Pressure_a**: Sum of atmospheric pressure readings for each city, with San Jose having the highest cumulative pressure.
+
+This comparative analysis of climate metrics provides insights into the atmospheric variations across urban environments, which can impact air quality and public health. The data underscores the diverse climate profiles of U.S. cities and their implications for air quality management and health outcomes.
+
+
+
+```{r}
+#Correlation between every columns
+constant_columns <- sapply(df, function(x) length(unique(x)) == 1)
+df <- df[, !constant_columns] 
+
+#correlation matrix
+cor_matrix <- cor(df[, sapply(df, is.numeric)])
+
+# Melt the correlation matrix for plotting
+melted_cor_matrix <- melt(cor_matrix)
+
+# Correlation heatmap
+ggplot(melted_cor_matrix, aes(Var1, Var2, fill = value)) +
+  geom_tile(color = "black") +
+  scale_fill_gradient2(low = "green", high = "violet", mid = "white", midpoint = 0, limit = c(-1, 1)) +
+  labs(title = "Correlation Heatmap", x = "", y = "") +
+  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1),axis.text.y = element_text(vjust=0,hjust=0))
+```
+
+
+Visualize the strength and direction of relationships (correlations) between pairs of variables in a dataset.
+
+**Correlation with Health Risk Score**
+
+A positive correlation means that as one variable increases, the other also increases. Conversely, a negative correlation means that as one variable increases, the other decreases.
+
+Top **positive correlations:**
+
+1. **Severity Score**: Strong positive link.
+2. **Heat Index**: Significant positive association.
+3. **Temperature Range**: Moderate positive correlation.
+4. **Windgust**: Mild positive correlation.
+
+Top **negative correlations:**
+
+1. **Visibility**: Strong negative association.
+2. **Solarenergy**: Significant negative correlation.
+3. **Dew Point**: Moderate negative link.
+4. **Humidity**: Mild negative correlation.
+
+Wind gusts have a positive impact on health risk, whereas temperature has a weaker, slightly negative relationship with health risk scores.Wind-related factors (gusts and speed) and humidity increase health risk scores, while factors like visibility, sunrise/sunset times, and moon phases reduce them.
+
+These indicate key factors influencing health risk scores.
+
+
+
+### c) Smart Questions
 
 ```{r}
 paste("Is there a statistically significant difference in the Health Risk Score on weekends compared to weekdays?")
@@ -230,6 +382,8 @@ if(t_test_result$p.value < 0.05) {
   cat("Fail to reject the null hypothesis: There is no statistically significant difference in the Health Risk Score between weekends and weekdays.\n")
 }
 ```
+
+
 ```{r}
 boxplot(Health_Risk_Score ~ Is_Weekend, data = df,
         main = "Health Risk Score Comparison: Weekends vs. Weekdays",
@@ -239,11 +393,11 @@ boxplot(Health_Risk_Score ~ Is_Weekend, data = df,
         border = "#202020")
 ```
 
-```{r}
-paste("The weak negative correlation of -0.24 suggests that higher temperatures are slightly associated with lower health risk scores, though the relationship is not strong")
-```
 
-<span style="color:navy;">San Jose has the highest health risk score and wind gusts, while Philadelphia shows the lowest health risk score and Los Angeles the lowest wind gusts.</span>
+**How do health risk scores differ between weekdays and weekends?**
+
+There is a significant difference in Health Risk Scores between weekends and weekdays. Scores are generally higher on weekends than on weekdays, indicating increased health risks during weekends
+
 
 ```{r}
 # Boxplot of Health Risk Score by City
@@ -253,6 +407,15 @@ ggplot(df, aes(x = City, y = Health_Risk_Score, fill = City)) +
   theme(axis.text.x = element_text(angle =90,hjust=1))
 ```
 
+
+**How do key meteorological factors vary across different cities?**
+
+**Key Observations**
+
+- San Jose shows the widest IQR, indicating greater variability in health risk scores.
+- Philadelphia has the lowest median health risk score, while New York City has the highest.
+- Outliers are present in all cities, with New York City showing the most extreme values.
+
 ```{r}
 # Boxplot of Windgust by City
 ggplot(df, aes(x = City, y = windgust, fill = City)) +
@@ -261,28 +424,15 @@ ggplot(df, aes(x = City, y = windgust, fill = City)) +
   theme(axis.text.x = element_text(angle =90,hjust=1))
 ```
 
-<span style="color:navy;">Visualize the strength and direction of relationships (correlations) between pairs of variables in a dataset.</span>
 
-```{r}
-#Correlation between every columns
-constant_columns <- sapply(df, function(x) length(unique(x)) == 1)
-df <- df[, !constant_columns] 
+**Key Observations**
 
-#correlation matrix
-cor_matrix <- cor(df[, sapply(df, is.numeric)])
+- San Jose exhibits the widest IQR, indicating the most variability in wind gust speeds among the cities.
+- Philadelphia has the lowest median wind gust speed, while Chicago has a relatively high median.
+- New York City shows a few outliers, indicating instances of unusually high wind gust speeds.
 
-# Melt the correlation matrix for plotting
-melted_cor_matrix <- melt(cor_matrix)
+San Jose has the highest health risk score and wind gusts, while Philadelphia shows the lowest health risk score and Los Angeles the lowest wind gusts.
 
-# Correlation heatmap
-ggplot(melted_cor_matrix, aes(Var1, Var2, fill = value)) +
-  geom_tile(color = "black") +
-  scale_fill_gradient2(low = "green", high = "violet", mid = "white", midpoint = 0, limit = c(-1, 1)) +
-  labs(title = "Correlation Heatmap", x = "", y = "") +
-  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1),axis.text.y = element_text(vjust=0,hjust=0))
-```
-
-<span style="color:navy;">Wind gusts have a positive impact on health risk, whereas temperature has a weaker, slightly negative relationship with health risk scores.Wind-related factors (gusts and speed) and humidity increase health risk scores, while factors like visibility, sunrise/sunset times, and moon phases reduce them.</span>
 
 ```{r}
 paste("Does wind gust have a significant impact on the Health Risk Score?")
@@ -336,6 +486,25 @@ plot5<-ggplot(df, aes(x = humidity, y = windgust)) +
 grid.arrange(plot1, plot2,plot3,plot4,plot5, ncol =2 )
 ```
 
+
+**Which key meteorological factors significantly influence health risk scores?**
+
+**Direct Relationships with Health Risk Score:**
+
+- **Wind Gusts**: The scatter plot shows a slight positive trend, suggesting that higher wind gusts are associated with a marginal increase in health risk scores.
+- **Severity Score**: A strong positive correlation is observed, indicating that an increase in severity score corresponds to a notable rise in health risk scores.
+- **Wind Speed**: Wind speed also displays a positive relationship with health risk score, implying that as wind speed increases, so does the health risk.
+- **Humidity**: There is a positive association between humidity levels and health risk scores, with higher humidity associated with increased health risks.
+    
+**How might changes in humidity affect overall health?**
+
+The analysis explores the relationships between environmental factors—such as wind gusts, severity score, wind speed, and humidity—and health risk scores.
+
+**Indirect Influence of Humidity**:
+
+- **Humidity vs. Wind Gust**: The scatter plot shows a slight positive correlation, suggesting that higher humidity may contribute to increased wind gusts. Since wind gusts are directly linked with higher health risk scores, this indicates that humidity may indirectly influence health risks through its effect on wind conditions.
+    
+        
 ```{r}
 paste("Correlation between visibility and Health risk :",cor(df$windgust, df$Severity_Score))
 plot1<-ggplot(df, aes(x = visibility, y = Health_Risk_Score)) +
@@ -376,49 +545,18 @@ plot4<-ggplot(df, aes(x = moonphase, y = Health_Risk_Score)) +
 
 grid.arrange(plot1, plot2,plot3,plot4, ncol = 2)
 ```
-```{r}
-summary_stats <- df %>%
-  group_by(City) %>%
-  summarise(
-    Avg_Dew_Point = mean(dew, na.rm = TRUE),
-    Avg_Humidity = mean(humidity, na.rm = TRUE),
-    Avg_Pressure = mean(pressure, na.rm = TRUE),
-    Total_Precipitation = sum(precip, na.rm = TRUE),
-    pressure_a = sum(pressure, na.rm = TRUE),
-    .groups = 'drop'  # Drop grouping
-  )
 
-# Print summary statistics
-print(summary_stats)
+This analysis examines the relationship between certain environmental and astronomical factors—visibility, sunset epoch, sunrise epoch, and moon phase—and health risk scores.
 
-# Visualization
 
-# 1. Average Dew Point by City
-ggplot(summary_stats, aes(x = City, y = Avg_Dew_Point)) +
-  geom_bar(stat = "identity", fill = "lightblue") +
-  labs(title = "Average Dew Point by City", x = "City", y = "Average Dew Point") +
-  theme_minimal()
+- **Visibility**: The plot shows a slight negative correlation between visibility and health risk score. Higher visibility tends to be associated with lower health risks.
+- **Sunset Epoch**: There is a negative trend between sunset time and health risk score, suggesting that later sunsets may be linked to reduced health risks.
+- **Sunrise Epoch**: Similarly, a negative trend is observed between sunrise time and health risk score, with later sunrises associated with lower health risks.
+- **Moon Phase**: The moon phase also shows a negative correlation with health risk score. As the moon progresses through its cycle, the health risk score tends to decrease.
 
-# 2. Average Humidity by City
-ggplot(summary_stats, aes(x = City, y = Avg_Humidity)) +
-  geom_bar(stat = "identity", fill = "lightgreen") +
-  labs(title = "Average Humidity by City", x = "City", y = "Average Humidity") +
-  theme_minimal()
 
-# 3. Total Precipitation by City
-ggplot(summary_stats, aes(x = City, y = Total_Precipitation)) +
-  geom_bar(stat = "identity", fill = "lightcoral") +
-  labs(title = "Total Precipitation by City", x = "City", y = "Total Precipitation") +
-  theme_minimal()
+These environmental and astronomical factors may subtly influence health risk scores. Clearer atmospheric conditions, later times of sunrise and sunset, and certain phases of the moon are associated with reduced health risks, suggesting possible connections between these natural phenomena and health outcomes.
 
-# 3. Pressue by City
-ggplot(summary_stats, aes(x = City, y = pressure_a)) +
-  geom_bar(stat = "identity", fill = "#909090") +
-  labs(title = "Pressure by City", x = "City", y = "Pressure") +
-  theme_minimal()
-```
-
-<span style="color:navy;">Both health risk and wind gust scores fluctuate similarly over time, peaking around September 8th and declining sharply by mid- September. Health risk score is being influenced by windgust.</span>
 
 ```{r}
 paste("How does the windgust vary over dates?")
@@ -445,6 +583,8 @@ ggplot(daily_summary, aes(x = datetime, y = Average_HRS)) +
        y = "Windgust") +
   scale_x_date(date_breaks = "2 day", date_labels = "%d %b")
 ```
+
+
 ```{r}
 paste("How does the Health Risk Score vary over dates?")
   
@@ -470,6 +610,13 @@ ggplot(daily_summary, aes(x = datetime, y = Average_HRS)) +
        y = "Average Health Risk Score") +
   scale_x_date(date_breaks = "2 day", date_labels = "%d %b")
 ```
+
+**How does the windgust vary over dates?**
+
+Health risk and wind gust scores both fluctuate similarly over time, peaking around September 8th and declining sharply by mid- September. Health risk score is being influenced by windgust.
+
+Both graphs display a similar trend over the month of September. Initially, wind gusts are high, and health risk scores are elevated. As the month progresses, both the wind gust intensity and health risk scores decrease. By the end of the month, these values stabilize at lower levels. This refers to the correlation where reduced wind gusts are associated with lower health risks.
+
 ```{r}
 daily_summary <- df %>%
   group_by(City, datetime) %>%  # Group by city and date
@@ -492,28 +639,45 @@ ggplot(daily_summary, aes(x = datetime, y = Average_HRS, color = City)) +
   theme(legend.position = "bottom")  # Place legend at the bottom
 ```
 
-<span style="color:navy;font-weight:bold;font-size: 13pt">5. Conclusion and EDA Insights</span><br>
+The above chart highlights variations in average health risk scores across U.S. cities during September. Some cities show steady trends, while others, like San Jose, experience significant daily fluctuations, suggesting a more dynamic health risk environment. Health scores generally range from 9.0 to 10.5, with some cities hitting higher levels early on, possibly indicating initial high-risk conditions that improved over time.
 
-<span style="color:navy;">Health Risk Variation: Health risk scores are higher on weekends compared to weekdays, indicating greater risks during weekends.</span>
+The dataset’s limitation to September, coupled with missing data for certain cities, restricts the ability to draw complete conclusions. In a real-time setting, missing data could hinder timely interventions. Future analyses should aim for consistent, long-term data to better capture health trends and support city planning efforts.
 
-<span style="color:navy;">City Comparison: San Jose has the highest health risk and wind gusts, while Philadelphia shows the lowest health risk and wind gusts.</span>
 
-<span style="color:navy;">Meteorological Impact: Wind gusts significantly increase health risk scores, while temperature has a weaker influence.</span>
+# **Conclusion and EDA Insights**
 
-<span style="color:navy;">Humidity and Health: Humidity was found to have a moderate positive correlation with health risk scores.</span>
+**Health Risk Variation:** Health risk scores are higher on weekends compared to weekdays, indicating greater risks during weekends
 
-<span style="color:navy;">Key Factors: Wind-related factors increase health risks, while visibility and sunrise/sunset times lowers them indirectly.
-</span>
+**City Comparison:** San Jose has the highest health risk and wind gusts, while Philadelphia shows the lowest health risk and wind gusts.
 
-<span style="color:navy;font-weight:bold;font-size: 13pt">6. Further Research and Limitations</span><br>
+**Meteorological Impact:** Wind gusts significantly increase health risk scores, while temperature has a weaker influence.
 
-<span style="color:navy;">Standardize and screen health risk data sources and expand the research cities and scope</span>
+**Humidity and Health:** Humidity was found to have a moderate positive correlation with health risk scores.
 
-<span style="color:navy;">Conducting time-series analyses to explore the relationship between seasonal meteorological factors and health risks.</span>
+**Key Factors:** Wind-related factors increase health risks, while visibility and sunrise/sunset times lowers them indirectly.
 
-<span style="color:navy;">Developing strategies to mitigate the adverse health impacts of extreme weather conditions, especially in areas with high wind or humidity levels.</span>
+# **Further Research**
 
-<span style="color:navy;font-weight:bold;font-size: 13pt">7. References</span><br><br>
+**1. Standardize and Screen Health Risk Data Sources**  
+To ensure robust and comparable analyses across locations, it is essential to establish standardized criteria for screening health risk data. This involves identifying reliable sources and uniform metrics for measuring health outcomes, such as respiratory or cardiovascular conditions influenced by air quality and meteorological factors. Expanding the research to include additional cities and diverse urban environments will enhance the study's generalizability.
+
+**2. Expand the Research Scope with Time-Series Analyses**  
+Conducting time-series analyses will allow for the exploration of how seasonal meteorological factors—like temperature, humidity, and precipitation—correlate with health risks over time. Time-series methods can identify trends, lags, and seasonal variations in health outcomes, offering a deeper understanding of how climate variability influences public health across different periods.
+
+**3. Develop Mitigation Strategies for Extreme Weather-Related Health Impacts**  
+Based on findings, targeted strategies can be developed to mitigate health risks associated with extreme weather conditions. This includes focusing on areas with high wind or humidity levels where the risk may be elevated. Potential strategies could involve community education, improvements in healthcare access during extreme weather events, and urban planning adjustments to reduce exposure to adverse conditions.
+
+These directions will contribute to a more comprehensive understanding of urban air quality, weather patterns, and their health implications, ultimately supporting policy initiatives aimed at improving public health in urban areas.
+
+# **References**
+
+1. **Singh, R. K., Mishra, S. K., et al. (2022)**. *Urban Air Pollution, Urban Heat Island and Human Health: A Systematic Review*. *Sustainability*. [Link](https://www.mdpi.com/2071-1050/14/15/9234)
+
+2. **Rojas, J. A. D., Weaver, C. P., et al. (2022)**. *Climate Change Impacts on Air Quality and Human Health*. *Data*. [Link](https://catalog.data.gov/dataset/climate-change-impacts-on-air-quality-and-human-health)
+
+3. **Han, J., Zhang, W., et al. (2023)**. *Machine Learning for Urban Air Quality Analytics: A Survey*. [Link](https://arxiv.org/abs/2310.09620)
+
+
 
 
 
