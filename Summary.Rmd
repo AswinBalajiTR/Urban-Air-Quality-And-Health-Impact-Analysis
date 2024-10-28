@@ -75,7 +75,7 @@ head(df)
 paste("Row Count:",dim(df)[1],"Column Count:",dim(df)[2])
 ```
 
-The dataset comprises a collection of **27,674** observations related to meteorological and environmental data, including temperature, humidity, and wind speed, recorded across across seven major U.S. cities for the month of September. It contains a total of **43** variables, such as `Health Risk Score` and `Severity Score`, providing a detailed view of daily atmospheric conditions.Key variables such as `temperature`, `humidity`, `wind speed`, `visibility`, and `weather descriptions` enable an in-depth analysis of how urban air quality affects health.</span>
+The dataset comprises a collection of **27,674** observations related to meteorological and environmental data, including temperature, humidity, and wind speed, recorded across across seven major U.S. cities for the month of September. It contains a total of **43** variables, such as `Health Risk Score` and `Severity Score`, providing a detailed view of daily atmospheric conditions.Key variables such as `temperature`, `humidity`, `wind speed`, `visibility`, and `weather descriptions` enable an in-depth analysis of how urban air quality affects health.
 
 ### c) Structure of the Dataset
 ```{r}
@@ -232,9 +232,10 @@ ggplot(df, aes(x = Health_Risk_Score)) +
 
 Most of the population has health risk scores around 9.0, with a small subset showing elevated scores near 10.0.
 
-### b) Bivariate and Multivariate Analysis</span><br>
+### b) Bivariate and Multivariate Analysis</span><br><br>
 
 
+   **Bivariate Analysis**
 
 ```{r}
 summary_stats <- df %>%
@@ -308,7 +309,7 @@ The following points provides a detailed breakdown of various metrics across cit
 This comparative analysis of climate metrics provides insights into the atmospheric variations across urban environments, which can impact air quality and public health. The data underscores the diverse climate profiles of U.S. cities and their implications for air quality management and health outcomes.
 
 
-
+**Multivariate Analysis**
 ```{r}
 #Correlation between every columns
 constant_columns <- sapply(df, function(x) length(unique(x)) == 1)
@@ -357,6 +358,8 @@ These indicate key factors influencing health risk scores.
 
 ### c) Smart Questions
 
+**1. How do health risk scores differ between weekdays and weekends?**
+
 ```{r}
 paste("Is there a statistically significant difference in the Health Risk Score on weekends compared to weekdays?")
   
@@ -393,11 +396,12 @@ boxplot(Health_Risk_Score ~ Is_Weekend, data = df,
         border = "#202020")
 ```
 
+**Key Observations**
 
-**How do health risk scores differ between weekdays and weekends?**
+There is a significant difference in Health Risk Scores between weekends and weekdays. Scores are generally higher on weekends than on weekdays, indicating increased health risks during weekends.
 
-There is a significant difference in Health Risk Scores between weekends and weekdays. Scores are generally higher on weekends than on weekdays, indicating increased health risks during weekends
 
+**2. How do key meteorological factors vary across different cities?**
 
 ```{r}
 # Boxplot of Health Risk Score by City
@@ -406,9 +410,6 @@ ggplot(df, aes(x = City, y = Health_Risk_Score, fill = City)) +
   labs(title = "City-wise Health Risk Score", x = "City", y = "Health Risk Score") +
   theme(axis.text.x = element_text(angle =90,hjust=1))
 ```
-
-
-**How do key meteorological factors vary across different cities?**
 
 **Key Observations**
 
@@ -424,7 +425,6 @@ ggplot(df, aes(x = City, y = windgust, fill = City)) +
   theme(axis.text.x = element_text(angle =90,hjust=1))
 ```
 
-
 **Key Observations**
 
 - San Jose exhibits the widest IQR, indicating the most variability in wind gust speeds among the cities.
@@ -434,8 +434,9 @@ ggplot(df, aes(x = City, y = windgust, fill = City)) +
 San Jose has the highest health risk score and wind gusts, while Philadelphia shows the lowest health risk score and Los Angeles the lowest wind gusts.
 
 
+**3. Which key meteorological factors significantly influence health risk scores?**
+
 ```{r}
-paste("Does wind gust have a significant impact on the Health Risk Score?")
 
 paste("Correlation between windgust and Health risk :",cor(df$windgust, df$Health_Risk_Score))
 plot1<-ggplot(df, aes(x = windgust, y = Health_Risk_Score)) +
@@ -469,25 +470,15 @@ paste("Correlation between humidity and Health risk :",cor(df$humidity, df$Healt
 plot4<-ggplot(df, aes(x = humidity, y = Health_Risk_Score)) +
   geom_point(color = "#2993ae") +
   geom_smooth(method = "lm", color = "black") + # Adds a regression line
-  labs(title = "humidity vs Health Risk Score", 
-       x = "humidity", 
+  labs(title = "Humidity vs Health Risk Score", 
+       x = "Humidity", 
        y = "Health Risk Score") +
   theme_minimal()
 
-paste("Correlation between humidity and windgust :",cor(df$humidity, df$Health_Risk_Score))
-plot5<-ggplot(df, aes(x = humidity, y = windgust)) +
-  geom_point(color = "violet") +
-  geom_smooth(method = "lm", color = "black") + # Adds a regression line
-  labs(title = "humidity vs windgust", 
-       x = "humidity", 
-       y = "windgust") +
-  theme_minimal()
-
-grid.arrange(plot1, plot2,plot3,plot4,plot5, ncol =2 )
+grid.arrange(plot1, plot2,plot3,plot4, ncol =2 )
 ```
 
-
-**Which key meteorological factors significantly influence health risk scores?**
+**Key Observations**
 
 **Direct Relationships with Health Risk Score:**
 
@@ -495,15 +486,7 @@ grid.arrange(plot1, plot2,plot3,plot4,plot5, ncol =2 )
 - **Severity Score**: A strong positive correlation is observed, indicating that an increase in severity score corresponds to a notable rise in health risk scores.
 - **Wind Speed**: Wind speed also displays a positive relationship with health risk score, implying that as wind speed increases, so does the health risk.
 - **Humidity**: There is a positive association between humidity levels and health risk scores, with higher humidity associated with increased health risks.
-    
-**How might changes in humidity affect overall health?**
-
-The analysis explores the relationships between environmental factors—such as wind gusts, severity score, wind speed, and humidity—and health risk scores.
-
-**Indirect Influence of Humidity**:
-
-- **Humidity vs. Wind Gust**: The scatter plot shows a slight positive correlation, suggesting that higher humidity may contribute to increased wind gusts. Since wind gusts are directly linked with higher health risk scores, this indicates that humidity may indirectly influence health risks through its effect on wind conditions.
-    
+   
         
 ```{r}
 paste("Correlation between visibility and Health risk :",cor(df$windgust, df$Severity_Score))
@@ -546,17 +529,40 @@ plot4<-ggplot(df, aes(x = moonphase, y = Health_Risk_Score)) +
 grid.arrange(plot1, plot2,plot3,plot4, ncol = 2)
 ```
 
-This analysis examines the relationship between certain environmental and astronomical factors—visibility, sunset epoch, sunrise epoch, and moon phase—and health risk scores.
+**Key Observations**
 
+**Indirect Relationships with Health Risk Score:**
+
+This analysis examines the relationship between certain environmental and astronomical factors—visibility, sunset epoch, sunrise epoch, and moon phase—and health risk scores.
 
 - **Visibility**: The plot shows a slight negative correlation between visibility and health risk score. Higher visibility tends to be associated with lower health risks.
 - **Sunset Epoch**: There is a negative trend between sunset time and health risk score, suggesting that later sunsets may be linked to reduced health risks.
 - **Sunrise Epoch**: Similarly, a negative trend is observed between sunrise time and health risk score, with later sunrises associated with lower health risks.
 - **Moon Phase**: The moon phase also shows a negative correlation with health risk score. As the moon progresses through its cycle, the health risk score tends to decrease.
 
+These environmental and astronomical factors may subtly influence health risk scores indirectly. Clearer atmospheric conditions, later times of sunrise and sunset, and certain phases of the moon are associated with reduced health risks, suggesting possible connections between these natural phenomena and health outcomes.
 
-These environmental and astronomical factors may subtly influence health risk scores. Clearer atmospheric conditions, later times of sunrise and sunset, and certain phases of the moon are associated with reduced health risks, suggesting possible connections between these natural phenomena and health outcomes.
+**4. How might changes in humidity affect overall health?**
 
+The analysis explores the relationships between environmental factors such as wind gusts, helath severity score, wind speed, and humidity—and health risk scores.
+
+
+```{r}
+paste("Correlation between humidity and windgust :",cor(df$humidity, df$Health_Risk_Score))
+ggplot(df, aes(x = humidity, y = windgust)) +
+  geom_point(color = "violet") +
+  geom_smooth(method = "lm", color = "black") + # Adds a regression line
+  labs(title = "Humidity vs Windgust", 
+       x = "Humidity", 
+       y = "Windgust") +
+  theme_minimal()
+```
+
+**Key Observations**
+
+The scatter plot above shows a slight positive correlation, suggesting that higher humidity may contribute to increased wind gusts. Since in the previous question we saw how wind gusts are directly linked with higher health risk scores, this indicates that humidity may indirectly influence health risks through its effect on wind conditions.
+
+**5. How does the Health Risk Score vary over dates?**
 
 ```{r}
 paste("How does the windgust vary over dates?")
@@ -584,10 +590,10 @@ ggplot(daily_summary, aes(x = datetime, y = Average_HRS)) +
   scale_x_date(date_breaks = "2 day", date_labels = "%d %b")
 ```
 
-
 ```{r}
-paste("How does the Health Risk Score vary over dates?")
   
+paste("How does the Health Risk Score vary over dates?")
+
 # Convert datetime column to Date type (if not already done)
 df$datetime <- as.Date(df$datetime, format = "%d-%m-%Y")  # Adjust the format as needed
 
@@ -611,12 +617,13 @@ ggplot(daily_summary, aes(x = datetime, y = Average_HRS)) +
   scale_x_date(date_breaks = "2 day", date_labels = "%d %b")
 ```
 
-**How does the windgust vary over dates?**
+**Key Observations**
 
 Health risk and wind gust scores both fluctuate similarly over time, peaking around September 8th and declining sharply by mid- September. Health risk score is being influenced by windgust.
 
 Both graphs display a similar trend over the month of September. Initially, wind gusts are high, and health risk scores are elevated. As the month progresses, both the wind gust intensity and health risk scores decrease. By the end of the month, these values stabilize at lower levels. This refers to the correlation where reduced wind gusts are associated with lower health risks.
 
+Let's also analyse the average health risk scores across U.S. cities during September month.
 ```{r}
 daily_summary <- df %>%
   group_by(City, datetime) %>%  # Group by city and date
@@ -638,6 +645,8 @@ ggplot(daily_summary, aes(x = datetime, y = Average_HRS, color = City)) +
   theme_minimal() +  # Use a minimal theme for better visualization
   theme(legend.position = "bottom")  # Place legend at the bottom
 ```
+
+**Key Observations**
 
 The above chart highlights variations in average health risk scores across U.S. cities during September. Some cities show steady trends, while others, like San Jose, experience significant daily fluctuations, suggesting a more dynamic health risk environment. Health scores generally range from 9.0 to 10.5, with some cities hitting higher levels early on, possibly indicating initial high-risk conditions that improved over time.
 
