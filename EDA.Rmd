@@ -234,6 +234,25 @@ We found **no duplicate rows** in the dataset, confirming data integrity. Additi
 
 ## **Outliers Removal**
 ```{r}
+library(ggplot2)
+library(reshape2)
+
+# Assuming df is your data frame
+numeric_cols <- df %>% select_if(is.numeric)  # Select numeric columns
+
+# Melt the data frame for ggplot2
+melted_data <- melt(numeric_cols)
+
+# Create combined boxplots using ggplot2
+ggplot(melted_data, aes(x = variable, y = value)) +
+  geom_boxplot(fill = "lightblue", color = "darkblue") +
+  labs(title = "Combined Boxplots of Numeric Columns", 
+       x = "Variables", 
+       y = "Values") +
+  theme_minimal() + # Optional: use a minimal theme for a cleaner look
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) # Rot
+```
+```{r}
 #Visualizing the outliers
 numeric_cols <- df %>% select_if(is.numeric)
 num_cols <- ncol(numeric_cols)
